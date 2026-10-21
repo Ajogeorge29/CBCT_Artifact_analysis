@@ -1,0 +1,16 @@
+comparison,scenario,block,first_scan_mean,second_scan_mean,difference_second_minus_first
+B-C,1 implant,1,395.8357,534.3561,138.5203
+B-C,1 implant,2,345.9175,590.771,244.8534
+B-C,1 implant,3,460.3228,518.8053,58.4825
+E-F,"2 implants, contralateral arches",1,261.0915,632.2047,371.1131
+E-F,"2 implants, contralateral arches",2,272.0713,650.6218,378.5505
+E-F,"2 implants, contralateral arches",3,283.0183,645.8947,362.8763
+G-H,"2 implants, same jaw",1,465.3335,598.6711,133.3376
+G-H,"2 implants, same jaw",2,474.1475,661.3955,187.248
+G-H,"2 implants, same jaw",3,480.9565,561.9211,80.9646
+I-J,3 implants,1,372.9688,639.1292,266.1603
+I-J,3 implants,2,376.7799,669.5394,292.7595
+I-J,3 implants,3,394.5961,625.5557,230.9596
+C-D,Alginate with tray vs tray removed,1,534.3561,589.1712,54.8151
+C-D,Alginate with tray vs tray removed,2,590.771,604.7926,14.0216
+C-D,Alginate with tray vs tray removed,3,518.8053,585.0799,66.2745

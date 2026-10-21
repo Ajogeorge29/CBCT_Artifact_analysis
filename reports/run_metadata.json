@@ -1,0 +1,15 @@
+{
+  "generated_at_local": "2026-10-21T18:27:59+05:30",
+  "input_filename": "Alginate study master chart.xlsx",
+  "privacy": "Source workbook excluded; aggregate outputs only",
+  "python": "3.13.15",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "packages": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.2",
+    "openpyxl": "3.1.5",
+    "pandas": "2.3.3",
+    "scipy": "1.18.0",
+    "statsmodels": "0.15.0"
+  }
+}

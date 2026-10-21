@@ -1,0 +1,4 @@
+comparison,manuscript_p,ten_group_tukey_p,difference,reproduces_at_3dp
+E-F,0.012,0.0067,-0.0053,False
+G-H,0.087,0.9383,0.8513,False
+I-J,0.049,0.0321,-0.0169,False

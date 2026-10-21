@@ -1,0 +1,32 @@
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Private/raw research data: never commit these files.
+data/private/**
+!data/private/.gitkeep
+*.xlsx
+*.xls
+*.xlsm
+*.xlsb
+*.sav
+*.dta
+*.parquet
+*.feather
+
+# Temporary analysis products
+reports/.tmp/
+reports/private/

@@ -1,0 +1,17 @@
+check,result,interpretation
+Worksheets,1,One worksheet expected
+Worksheet extent,32 × 74,Includes notes/blank padding
+Data rows / implant sites,18,Expected 18
+Scans,10,Expected A–J
+Numeric measurements,1296,18 sites × 72 cells
+Missing/non-numeric values,0,Validated before analysis
+Zero values,358,27.6% of numeric cells
+Negative values,0,None expected in current workbook
+Minimum,0.000,Descriptive only
+Maximum,2627.658,Descriptive only
+Duplicate site codes,0,Site codes should be unique
+Merged ranges,6,Scan labels span multi-site rows
+Formula cells,0,"Workbook contains values, not calculations"
+Comments,0,No embedded data notes
+Tables/charts,0/0,No structured Excel table or chart
+Non-empty note rows after data,5,Free-text requested comparisons

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBCT alginate study — data audit</title>
+<style>
+:root { --ink:#172033; --muted:#526071; --navy:#12355b; --blue:#2b6f97; --paper:#fff; --bg:#f3f6f9; --line:#dbe3ea; --warn:#fff4db; --danger:#9d2a3a; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.62 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { width:min(1120px, calc(100% - 32px)); margin:32px auto 64px; background:var(--paper); padding:clamp(28px,5vw,68px); box-shadow:0 18px 50px rgba(18,53,91,.09); border-radius:16px; }
+h1,h2,h3 { color:var(--navy); line-height:1.2; }
+h1 { font-size:clamp(2rem,4vw,3.1rem); margin:.1em 0 .2em; }
+h2 { margin-top:2.2em; padding-top:.3em; border-top:2px solid var(--line); }
+.eyebrow { color:var(--blue); font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.78rem; }
+.lede { font-size:1.13rem; color:#334155; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:26px 0; }
+.card { background:#f7fafc; border:1px solid var(--line); border-radius:12px; padding:18px; }
+.card strong { display:block; font-size:1.65rem; color:var(--navy); }
+.callout { border-left:5px solid var(--blue); background:#edf6fb; padding:15px 18px; border-radius:8px; }
+.warning { border-left-color:#d98e04; background:var(--warn); }
+figure { margin:32px 0; }
+figure img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:10px; }
+figcaption { color:var(--muted); font-size:.9rem; margin-top:8px; }
+.table-wrap { width:100%; overflow-x:auto; margin:18px 0 28px; border:1px solid var(--line); border-radius:10px; }
+table { border-collapse:collapse; width:100%; font-size:.89rem; }
+th { background:var(--navy); color:white; text-align:left; position:sticky; top:0; }
+th,td { padding:9px 11px; border-bottom:1px solid var(--line); white-space:nowrap; }
+tbody tr:nth-child(even) { background:#f8fafc; }
+code { background:#edf1f5; border-radius:4px; padding:.08em .32em; }
+pre { background:#101827; color:#e6edf3; padding:17px; border-radius:9px; overflow:auto; }
+ol li, ul li { margin:.5em 0; }
+.footer { margin-top:48px; color:var(--muted); font-size:.9rem; }
+@media print { body{background:white} main{box-shadow:none;margin:0;width:100%;padding:24px} .table-wrap{overflow:visible} }
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Reproducible research audit · 2026-10-21</div>
+<h1>CBCT alginate study<br>data audit &amp; visualization</h1>
+<p class="lede">The workbook is cell-complete, but the measurement schema and experimental unit
+must be resolved before its inferential results are submission-ready.</p>
+
+<div class="cards">
+  <div class="card"><strong>1296</strong>numeric measurements</div>
+  <div class="card"><strong>18</strong>implant-site rows</div>
+  <div class="card"><strong>9/10</strong>means reproduced</div>
+  <div class="card"><strong>27.6%</strong>exactly zero</div>
+</div>
+
+<div class="callout"><strong>Privacy boundary.</strong> The workbook remains in <code>data/private/</code>,
+is ignored by Git, and is never exported row-by-row. All tables and figures below are aggregate.</div>
+
+<h2>Executive finding</h2>
+<p>The workbook holds 72 values per site in three unlabelled 24-value blocks. The manuscripts
+describe 24 values per site. Nine of ten scan means reproduce at two decimals from block 1; Scan F
+is 632.2047 in the workbook (632.20 at two decimals) but 632.21 in both manuscripts. All nine Scan A
+p-values reproduce as a ten-group Tukey HSD on block 1. That identifies the prior calculation but
+leaves two-thirds of the stored measurements unexplained.</p>
+<p>All four like-for-like alginate comparisons move toward higher mean PIV in all three blocks.
+This is descriptively consistent, but the PIV locations are nested technical readings within scans;
+they are not automatically independent experimental replicates.</p>
+
+<h2>Workbook audit</h2>
+<div class="table-wrap"><table><thead><tr><th>check</th><th>result</th><th>interpretation</th></tr></thead><tbody><tr><td>Worksheets</td><td>1</td><td>One worksheet expected</td></tr><tr><td>Worksheet extent</td><td>32 × 74</td><td>Includes notes/blank padding</td></tr><tr><td>Data rows / implant sites</td><td>18</td><td>Expected 18</td></tr><tr><td>Scans</td><td>10</td><td>Expected A–J</td></tr><tr><td>Numeric measurements</td><td>1296</td><td>18 sites × 72 cells</td></tr><tr><td>Missing/non-numeric values</td><td>0</td><td>Validated before analysis</td></tr><tr><td>Zero values</td><td>358</td><td>27.6% of numeric cells</td></tr><tr><td>Negative values</td><td>0</td><td>None expected in current workbook</td></tr><tr><td>Minimum</td><td>0.000</td><td>Descriptive only</td></tr><tr><td>Maximum</td><td>2627.658</td><td>Descriptive only</td></tr><tr><td>Duplicate site codes</td><td>0</td><td>Site codes should be unique</td></tr><tr><td>Merged ranges</td><td>6</td><td>Scan labels span multi-site rows</td></tr><tr><td>Formula cells</td><td>0</td><td>Workbook contains values, not calculations</td></tr><tr><td>Comments</td><td>0</td><td>No embedded data notes</td></tr><tr><td>Tables/charts</td><td>0/0</td><td>No structured Excel table or chart</td></tr><tr><td>Non-empty note rows after data</td><td>5</td><td>Free-text requested comparisons</td></tr></tbody></table></div>
+<ul>
+<li>No header row, codebook, formulas, validations, structured table, or cell comments define the 72 columns.</li>
+<li>Six merged scan labels must be carried down to secondary implant sites.</li>
+<li>358 values are zero; the file does not define whether zero is valid PIV, clipping/background, or encoded missingness.</li>
+<li>Qualitative Likert ratings are absent, so inter-rater reliability cannot be audited.</li>
+</ul>
+<figure><img src="figures/zero_rate_heatmap.png" alt="Heatmap of zero rates"><figcaption>Zero prevalence varies by scan and unlabelled block.</figcaption></figure>
+
+<h2>Manuscript mean reproduction</h2>
+<div class="table-wrap"><table><thead><tr><th>scan_id</th><th>manuscript_mean</th><th>workbook_block_1_mean</th><th>difference</th><th>reproduces_at_2dp</th></tr></thead><tbody><tr><td>A</td><td>123.0500</td><td>123.0490</td><td>-0.0010</td><td>Yes</td></tr><tr><td>B</td><td>395.8400</td><td>395.8357</td><td>-0.0043</td><td>Yes</td></tr><tr><td>C</td><td>534.3600</td><td>534.3561</td><td>-0.0039</td><td>Yes</td></tr><tr><td>D</td><td>589.1700</td><td>589.1712</td><td>0.0012</td><td>Yes</td></tr><tr><td>E</td><td>261.0900</td><td>261.0915</td><td>0.0015</td><td>Yes</td></tr><tr><td>F</td><td>632.2100</td><td>632.2047</td><td>-0.0053</td><td>No</td></tr><tr><td>G</td><td>465.3300</td><td>465.3335</td><td>0.0035</td><td>Yes</td></tr><tr><td>H</td><td>598.6700</td><td>598.6711</td><td>0.0011</td><td>Yes</td></tr><tr><td>I</td><td>372.9700</td><td>372.9688</td><td>-0.0012</td><td>Yes</td></tr><tr><td>J</td><td>639.1300</td><td>639.1292</td><td>-0.0008</td><td>Yes</td></tr></tbody></table></div>
+<figure><img src="figures/scan_block_means.png" alt="Scan means across all blocks"><figcaption>The printed manuscript means derive from block 1; Scan F differs by 0.0053.</figcaption></figure>
+<figure><img src="figures/block_1_distributions.png" alt="Block 1 distributions"><figcaption>Point distributions are descriptive; points are nested within scan/site.</figcaption></figure>
+
+<h2>Scan A comparisons</h2>
+<div class="table-wrap"><table><thead><tr><th>comparison</th><th>meandiff</th><th>manuscript_p</th><th>p_adjusted</th><th>lower</th><th>upper</th><th>reject</th><th>reproduces_at_3dp</th></tr></thead><tbody><tr><td>A-B</td><td>272.7868</td><td>0.6220</td><td>0.6220</td><td>-168.0694</td><td>713.6429</td><td>No</td><td>Yes</td></tr><tr><td>A-C</td><td>411.3071</td><td>0.0910</td><td>0.0911</td><td>-29.5490</td><td>852.1632</td><td>No</td><td>Yes</td></tr><tr><td>A-D</td><td>466.1222</td><td>0.0290</td><td>0.0286</td><td>25.2661</td><td>906.9783</td><td>Yes</td><td>Yes</td></tr><tr><td>A-E</td><td>138.0426</td><td>0.9790</td><td>0.9790</td><td>-243.7501</td><td>519.8352</td><td>No</td><td>Yes</td></tr><tr><td>A-F</td><td>509.1557</td><td>0.0010</td><td>0.0011</td><td>127.3631</td><td>890.9483</td><td>Yes</td><td>Yes</td></tr><tr><td>A-G</td><td>342.2845</td><td>0.1230</td><td>0.1230</td><td>-39.5081</td><td>724.0771</td><td>No</td><td>Yes</td></tr><tr><td>A-H</td><td>475.6221</td><td>0.0030</td><td>0.0034</td><td>93.8295</td><td>857.4148</td><td>Yes</td><td>Yes</td></tr><tr><td>A-I</td><td>249.9199</td><td>0.4530</td><td>0.4526</td><td>-110.0377</td><td>609.8774</td><td>No</td><td>Yes</td></tr><tr><td>A-J</td><td>516.0802</td><td>0.0000</td><td>0.0003</td><td>156.1227</td><td>876.0377</td><td>Yes</td><td>Yes</td></tr></tbody></table></div>
+<div class="callout warning"><strong>Inference warning.</strong> Tukey's multiplicity adjustment is
+reproduced, but the calculation treats nested PIV locations as group observations. Unless their
+independence is defensible, standard errors may be too small. Scan A also differs by implant presence.</div>
+<figure><img src="figures/control_tukey_contrasts.png" alt="Tukey contrasts against control"><figcaption>Simultaneous 95% intervals from the reproduced block 1 Tukey model.</figcaption></figure>
+
+<h2>Matched-configuration sensitivity</h2>
+<div class="table-wrap"><table><thead><tr><th>comparison</th><th>scenario</th><th>block</th><th>first_scan_mean</th><th>second_scan_mean</th><th>difference_second_minus_first</th></tr></thead><tbody><tr><td>B-C</td><td>1 implant</td><td>1</td><td>395.8357</td><td>534.3561</td><td>138.5203</td></tr><tr><td>B-C</td><td>1 implant</td><td>2</td><td>345.9175</td><td>590.7710</td><td>244.8534</td></tr><tr><td>B-C</td><td>1 implant</td><td>3</td><td>460.3228</td><td>518.8053</td><td>58.4825</td></tr><tr><td>E-F</td><td>2 implants, contralateral arches</td><td>1</td><td>261.0915</td><td>632.2047</td><td>371.1131</td></tr><tr><td>E-F</td><td>2 implants, contralateral arches</td><td>2</td><td>272.0713</td><td>650.6218</td><td>378.5505</td></tr><tr><td>E-F</td><td>2 implants, contralateral arches</td><td>3</td><td>283.0183</td><td>645.8947</td><td>362.8763</td></tr><tr><td>G-H</td><td>2 implants, same jaw</td><td>1</td><td>465.3335</td><td>598.6711</td><td>133.3376</td></tr><tr><td>G-H</td><td>2 implants, same jaw</td><td>2</td><td>474.1475</td><td>661.3955</td><td>187.2480</td></tr><tr><td>G-H</td><td>2 implants, same jaw</td><td>3</td><td>480.9565</td><td>561.9211</td><td>80.9646</td></tr><tr><td>I-J</td><td>3 implants</td><td>1</td><td>372.9688</td><td>639.1292</td><td>266.1603</td></tr><tr><td>I-J</td><td>3 implants</td><td>2</td><td>376.7799</td><td>669.5394</td><td>292.7595</td></tr><tr><td>I-J</td><td>3 implants</td><td>3</td><td>394.5961</td><td>625.5557</td><td>230.9596</td></tr><tr><td>C-D</td><td>Alginate with tray vs tray removed</td><td>1</td><td>534.3561</td><td>589.1712</td><td>54.8151</td></tr><tr><td>C-D</td><td>Alginate with tray vs tray removed</td><td>2</td><td>590.7710</td><td>604.7926</td><td>14.0216</td></tr><tr><td>C-D</td><td>Alginate with tray vs tray removed</td><td>3</td><td>518.8053</td><td>585.0799</td><td>66.2745</td></tr></tbody></table></div>
+<figure><img src="figures/matched_pair_sensitivity.png" alt="Matched differences across blocks"><figcaption>Positive B–C, E–F, G–H and I–J values mean the alginate scan had higher mean PIV.</figcaption></figure>
+<h3>Unresolved manuscript p-values</h3>
+<p>The manuscript does not name the method for its second p-value table. Applying the same ten-group
+Tukey analysis does not reproduce those three values:</p>
+<div class="table-wrap"><table><thead><tr><th>comparison</th><th>manuscript_p</th><th>ten_group_tukey_p</th><th>difference</th><th>reproduces_at_3dp</th></tr></thead><tbody><tr><td>E-F</td><td>0.0120</td><td>0.0067</td><td>-0.0053</td><td>No</td></tr><tr><td>G-H</td><td>0.0870</td><td>0.9383</td><td>0.8513</td><td>No</td></tr><tr><td>I-J</td><td>0.0490</td><td>0.0321</td><td>-0.0169</td><td>No</td></tr></tbody></table></div>
+
+<h2>Risks requiring resolution</h2>
+<ol>
+<li><strong>Unknown schema:</strong> define block, radius, direction, repeat/slice, observer, unit, and zero semantics.</li>
+<li><strong>Endpoint selection:</strong> explain why block 1 was primary or reanalyze all blocks using a stated repeated-measures model.</li>
+<li><strong>Experimental unit:</strong> PIV points within a scan are correlated; identify independent skull/scan/implant replication.</li>
+<li><strong>Confounding:</strong> scan IDs change implant number/location and alginate; Scan A also removes the implant.</li>
+<li><strong>Audit trail:</strong> link CBCT IDs, ROI/slice coordinates, extraction code/version, and qualitative scores.</li>
+<li><strong>Reporting:</strong> use <code>p &lt; 0.001</code>, not <code>p = 0.000</code>, and report effects with intervals.</li>
+</ol>
+
+<h2>Recommended remediation</h2>
+<ol>
+<li>Freeze a signed-off data dictionary and preserve the workbook as an immutable private source.</li>
+<li>Reconcile all three blocks with the manuscript endpoint before further inference.</li>
+<li>Use planned matched contrasts and a justified hierarchical/repeated model only when independent replication supports it.</li>
+<li>Document and reproduce the E–F, G–H, and I–J p-value method.</li>
+<li>Add blinded qualitative ratings and a justified inter-rater agreement analysis.</li>
+<li>Archive the final environment, source checksum, software versions, and analysis log.</li>
+</ol>
+
+<h2>Reproduce locally</h2>
+<pre><code>python -m pip install -e ".[dev]"
+python -m cbct_artifact_analysis run
+python -m pytest
+python scripts/privacy_guard.py --tracked</code></pre>
+
+<p class="footer">Generated from the private master workbook by the versioned analysis pipeline.
+No row-level measurements are embedded in this report.</p>
+</main></body></html>
