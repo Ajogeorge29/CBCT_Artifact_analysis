@@ -32,6 +32,11 @@ reproducibility pipeline. Update it whenever a study owner resolves an open ques
 - All row-level values remain memory-only. Reports and tables contain aggregates.
 - The existing Tukey calculation is reproduced for audit purposes, not endorsed as the final
   inferential model.
+- The paired sensitivity analysis uses the three trial means as pairs and an exact two-sided
+  sign-flip test. It is exploratory because trial independence is unconfirmed and n = 3.
+- RTM validation holds out entire scan-configuration families. Scan ID is never a predictor.
+- Measurement position 1–24 is tested only as a clearly labelled provisional sensitivity feature;
+  it is not represented as a radius or direction until the data dictionary is signed off.
 
 ## Open decisions blocking a final analysis
 

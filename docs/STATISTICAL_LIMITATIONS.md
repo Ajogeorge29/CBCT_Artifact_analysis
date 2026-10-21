@@ -15,6 +15,13 @@ points within trial, site/implant, scan, and skull as supported by the design. I
 acquisition for each condition, the current results should be presented as descriptive/exploratory;
 independent scan-level replication is needed for population-level claims.
 
+The exploratory paired analysis aggregates the 24 points within each trial before comparing B–C,
+E–F, G–H, I–J, and C–D. This avoids counting the individual points as independent pairs, but it
+leaves only three trial pairs per comparison. An exact two-sided sign-flip test cannot produce a
+p-value below 0.25 with three same-direction pairs. In addition, the trials may be repeated
+extractions from the same acquisition rather than independent acquisitions, so even that p-value
+must not be treated as confirmatory evidence.
+
 ## Other limitations
 
 - Scan A has no implant. Its contrast with implant scans cannot isolate an alginate effect.
@@ -27,3 +34,5 @@ independent scan-level replication is needed for population-level claims.
 - Trial 1 was used for manuscript means and reported Scan A p-values; the omission of trials 2–3
   needs a documented rationale or a repeated-measures sensitivity analysis.
 - The qualitative Likert ratings and reader IDs are absent, preventing inter-rater analysis.
+- Predictive validation is limited to five scan-configuration families. Grouped RTM and linear
+  regression errors describe this dataset only; they are not clinical generalization estimates.

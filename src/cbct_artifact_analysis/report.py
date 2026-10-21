@@ -57,6 +57,20 @@ def _report_context(results: AuditResults, figures: dict[str, str]) -> dict[str,
         columns={"workbook_block_1_mean": "workbook_trial_1_mean"}
     )
     sensitivity_display = results.matched_pair_sensitivity.rename(columns={"block": "trial"})
+    paired_display = results.paired_trial_analysis[
+        [
+            "comparison",
+            "comparison_type",
+            "n_trial_pairs",
+            "first_mean_across_trials",
+            "second_mean_across_trials",
+            "mean_paired_difference",
+            "paired_difference_sd",
+            "difference_ci95_lower",
+            "difference_ci95_upper",
+            "exact_sign_flip_p",
+        ]
+    ]
     return {
         "generated_date": date.today().isoformat(),
         "profile": results.profile,
@@ -84,6 +98,7 @@ def _report_context(results: AuditResults, figures: dict[str, str]) -> dict[str,
         "means_md": _markdown_table(means_display),
         "tukey_md": _markdown_table(results.control_tukey_reproduction),
         "matched_md": _markdown_table(sensitivity_display),
+        "paired_md": _markdown_table(paired_display),
         "matched_p_md": _markdown_table(results.matched_p_reproduction),
         "quality_html": _html_table(results.quality_summary),
         "table_1_html": _html_table(results.experimental_design),
@@ -92,6 +107,7 @@ def _report_context(results: AuditResults, figures: dict[str, str]) -> dict[str,
         "means_html": _html_table(means_display),
         "tukey_html": _html_table(results.control_tukey_reproduction),
         "matched_html": _html_table(sensitivity_display),
+        "paired_html": _html_table(paired_display),
         "matched_p_html": _html_table(results.matched_p_reproduction),
     }
 
@@ -214,6 +230,28 @@ No point-level p-values are presented in this table.
 
 ![Matched contrasts across trials]({{ figures.matched_differences }})
 
+## Paired trial-level analysis
+
+{{ paired_md }}
+
+The paired unit here is the 24-measurement trial mean, not an individual PIV location. The exact
+two-sided sign-flip p-value is 0.25 for every comparison: with only three trial pairs, 0.25 is the
+smallest attainable two-sided value when all three differences have the same sign. The t-based 95%
+intervals are shown descriptively, but normality cannot be assessed with three pairs. More
+importantly, the trials may be technical repeats rather than independent scan acquisitions. These
+results therefore do not establish statistical significance; independent acquisition-level
+replication is needed for confirmatory inference.
+
+## Secondary RTM feasibility analysis
+
+The grouped feasibility experiment is reported separately in `rtm_feasibility_report.md`. The
+confirmed-design Regression Tsetlin Machine had pooled MAE/RMSE of 413.9/501.2 gray-value units,
+compared with 400.7/485.8 for linear regression and 409.0/490.3 for the rule baseline. Its clauses
+mainly restated condition, tray, anatomy, and trial patterns already visible descriptively. The RTM
+should **not** be retained as a manuscript result; it may remain as a reproducible appendix or
+future-work note. The model that adds positions 1–24 is sensitivity-only because those column
+positions are not validated radius/direction labels.
+
 The manuscript's second p-value table is not reproduced by applying the same ten-group Tukey HSD
 to trial 1:
 
@@ -257,12 +295,15 @@ result, and the I–J conclusion is close to 0.05 in the manuscript.
    ordinal mixed model, as justified by the protocol).
 6. Version the analysis environment and record software versions, input checksum, and a signed-off
    analysis run for the final manuscript.
+7. Keep the current RTM feasibility experiment outside the manuscript results unless independent
+   validation data and a signed-off measurement-position map support a new analysis.
 
 ## Reproduction
 
 ```powershell
 python -m pip install -e ".[dev]"
 python -m cbct_artifact_analysis run
+.\\scripts\\run_rtm_feasibility.ps1
 python -m pytest
 python scripts/privacy_guard.py --tracked
 ```
@@ -389,6 +430,18 @@ are labelled as containing alginate and differ in tray status. No point-level p-
 <h2>Trial sensitivity analysis</h2>
 {{ matched_html | safe }}
 <figure><img src="{{ figures.matched_differences }}" alt="Matched differences across trials"><figcaption>Positive B–C, E–F, G–H and I–J values mean the alginate scan had higher mean PIV.</figcaption></figure>
+<h2>Paired trial-level analysis</h2>
+{{ paired_html | safe }}
+<div class="callout warning"><strong>Exploratory inference only.</strong> The exact two-sided
+sign-flip p-value is 0.25 for every comparison, the minimum possible with three same-direction
+pairs. Trials may be technical repeats rather than independent acquisitions, so these results do
+not establish statistical significance.</div>
+<h2>Secondary RTM feasibility analysis</h2>
+<p>The confirmed-design Regression Tsetlin Machine had pooled MAE/RMSE of 413.9/501.2 gray-value
+units, compared with 400.7/485.8 for linear regression and 409.0/490.3 for the rule baseline. Its
+clauses mainly restated already-visible condition, tray, anatomy, and trial patterns. It should not
+be retained as a manuscript result. See <code>rtm_feasibility_report.md</code>; the 1–24 position
+variant is sensitivity-only because those positions lack validated radius/direction labels.</p>
 <h3>Unresolved manuscript p-values</h3>
 <p>The manuscript does not name the method for its second p-value table. Applying the same ten-group
 Tukey analysis does not reproduce those three values:</p>
@@ -412,11 +465,13 @@ Tukey analysis does not reproduce those three values:</p>
 <li>Document and reproduce the E–F, G–H, and I–J p-value method.</li>
 <li>Add blinded qualitative ratings and a justified inter-rater agreement analysis.</li>
 <li>Archive the final environment, source checksum, software versions, and analysis log.</li>
+<li>Keep the current RTM outside the manuscript results unless independent validation and a signed-off position map support re-analysis.</li>
 </ol>
 
 <h2>Reproduce locally</h2>
 <pre><code>python -m pip install -e ".[dev]"
 python -m cbct_artifact_analysis run
+.\\scripts\\run_rtm_feasibility.ps1
 python -m pytest
 python scripts/privacy_guard.py --tracked</code></pre>
 
@@ -464,6 +519,13 @@ are outside the study.
   units. These are exploratory summaries, not independent replicated effects.
 - The reported E–F, G–H, and I–J p-values are not reproduced by the same Tukey procedure; the
   original method needs to be identified.
+- Trial-mean paired differences are directionally positive in all five planned comparisons, but
+  every exact two-sided sign-flip p-value is 0.25. With only three possibly technical trial pairs,
+  this does not establish statistical significance.
+- In five-fold leave-one-configuration-out validation, the confirmed-design RTM had pooled
+  MAE/RMSE 413.9/501.2, versus 400.7/485.8 for linear regression and 409.0/490.3 for the rule
+  baseline. Its clauses mostly repeated known condition/tray/anatomy patterns. Do not retain it as
+  a manuscript result; keep it as an appendix or future-work note.
 
 ## Main limitations
 
@@ -485,14 +547,17 @@ are outside the study.
 4. Identify the statistical procedure/software used for the second manuscript p-value table.
 5. Confirm the number of independent skulls and scan acquisitions. If there is one acquisition per
    condition, present inference as exploratory and plan independent replication.
-6. Approve the revised objective/hypothesis and supply qualitative ratings if those conclusions will
+6. Keep the current RTM feasibility result outside the manuscript results. Reconsider it only with
+   independent validation data and a signed-off mapping for positions 1–24.
+7. Approve the revised objective/hypothesis and supply qualitative ratings if those conclusions will
    remain in the manuscript.
 
 ## Requested meeting outcome
 
 Approve the data dictionary, experimental unit, primary matched contrasts, role of all three trials,
-and whether the current work is a descriptive pilot or has enough independent replication for a
-confirmatory mixed/repeated-measures analysis.
+whether the current work is a descriptive pilot or has enough independent replication for a
+confirmatory mixed/repeated-measures analysis, and the decision to exclude the current RTM result
+from the manuscript.
 """
 
 

@@ -210,6 +210,34 @@ No point-level p-values are presented in this table.
 
 ![Matched contrasts across trials](figures/matched_pair_sensitivity.png)
 
+## Paired trial-level analysis
+
+| comparison | comparison_type | n_trial_pairs | first_mean_across_trials | second_mean_across_trials | mean_paired_difference | paired_difference_sd | difference_ci95_lower | difference_ci95_upper | exact_sign_flip_p |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| B-C | Alginate vs no alginate | 3 | 400.6920 | 547.9775 | 147.2854 | 93.4941 | -84.9669 | 379.5377 | 0.2500 |
+| E-F | Alginate vs no alginate | 3 | 272.0604 | 642.9071 | 370.8467 | 7.8405 | 351.3698 | 390.3236 | 0.2500 |
+| G-H | Alginate vs no alginate | 3 | 473.4791 | 607.3292 | 133.8501 | 53.1436 | 1.8342 | 265.8660 | 0.2500 |
+| I-J | Alginate vs no alginate | 3 | 381.4483 | 644.7414 | 263.2931 | 30.9996 | 186.2860 | 340.3003 | 0.2500 |
+| C-D | Tray sensitivity; both scans labelled alginate | 3 | 547.9775 | 593.0145 | 45.0371 | 27.4645 | -23.1885 | 113.2627 | 0.2500 |
+
+The paired unit here is the 24-measurement trial mean, not an individual PIV location. The exact
+two-sided sign-flip p-value is 0.25 for every comparison: with only three trial pairs, 0.25 is the
+smallest attainable two-sided value when all three differences have the same sign. The t-based 95%
+intervals are shown descriptively, but normality cannot be assessed with three pairs. More
+importantly, the trials may be technical repeats rather than independent scan acquisitions. These
+results therefore do not establish statistical significance; independent acquisition-level
+replication is needed for confirmatory inference.
+
+## Secondary RTM feasibility analysis
+
+The grouped feasibility experiment is reported separately in `rtm_feasibility_report.md`. The
+confirmed-design Regression Tsetlin Machine had pooled MAE/RMSE of 413.9/501.2 gray-value units,
+compared with 400.7/485.8 for linear regression and 409.0/490.3 for the rule baseline. Its clauses
+mainly restated condition, tray, anatomy, and trial patterns already visible descriptively. The RTM
+should **not** be retained as a manuscript result; it may remain as a reproducible appendix or
+future-work note. The model that adds positions 1–24 is sensitivity-only because those column
+positions are not validated radius/direction labels.
+
 The manuscript's second p-value table is not reproduced by applying the same ten-group Tukey HSD
 to trial 1:
 
@@ -257,12 +285,15 @@ result, and the I–J conclusion is close to 0.05 in the manuscript.
    ordinal mixed model, as justified by the protocol).
 6. Version the analysis environment and record software versions, input checksum, and a signed-off
    analysis run for the final manuscript.
+7. Keep the current RTM feasibility experiment outside the manuscript results unless independent
+   validation data and a signed-off measurement-position map support a new analysis.
 
 ## Reproduction
 
 ```powershell
 python -m pip install -e ".[dev]"
 python -m cbct_artifact_analysis run
+.\scripts\run_rtm_feasibility.ps1
 python -m pytest
 python scripts/privacy_guard.py --tracked
 ```

@@ -17,6 +17,7 @@ import scipy
 import statsmodels
 
 from cbct_artifact_analysis.analysis import rounded_for_export, run_audit
+from cbct_artifact_analysis.feasibility import run_rtm_feasibility
 from cbct_artifact_analysis.io import WorkbookValidationError, load_master_workbook
 from cbct_artifact_analysis.report import write_reports
 from cbct_artifact_analysis.visualize import create_figures
@@ -38,6 +39,7 @@ def _write_aggregate_tables(results: object, table_dir: Path) -> list[Path]:
         "manuscript_reproduction.csv": results.manuscript_reproduction,
         "control_tukey_reproduction.csv": results.control_tukey_reproduction,
         "matched_pair_sensitivity.csv": results.matched_pair_sensitivity,
+        "paired_trial_analysis.csv": results.paired_trial_analysis,
         "matched_p_reproduction.csv": results.matched_p_reproduction,
     }
     paths = []
@@ -89,6 +91,18 @@ def _run(input_path: Path, output_dir: Path) -> int:
     return 0
 
 
+def _run_rtm(input_path: Path, output_dir: Path) -> int:
+    data = load_master_workbook(input_path)
+    results = run_rtm_feasibility(data.long, output_dir)
+    print(f"Validated {len(data.sites)} site rows before grouped model evaluation.")
+    print(f"RTM library: pyTsetlinMachine {results.library_version}")
+    print(f"Feasibility report: {results.report_path}")
+    print(f"Model comparison figure: {results.figure_path}")
+    print(f"Retain in manuscript: {'yes' if results.retain_in_manuscript else 'no'}")
+    print("Privacy check: aggregate metrics and clause summaries only; no row-level output.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="cbct-audit",
@@ -98,6 +112,11 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser = subparsers.add_parser("run", help="Run validation, analysis, and reporting")
     run_parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     run_parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    rtm_parser = subparsers.add_parser(
+        "rtm-feasibility", help="Run grouped Regression Tsetlin Machine feasibility analysis"
+    )
+    rtm_parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
+    rtm_parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     return parser
 
 
@@ -107,7 +126,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command is None:
         args = parser.parse_args(["run"] if argv is None else ["run", *argv])
     try:
+        if args.command == "rtm-feasibility":
+            return _run_rtm(args.input, args.output_dir)
         return _run(args.input, args.output_dir)
-    except (FileNotFoundError, WorkbookValidationError) as error:
+    except (FileNotFoundError, RuntimeError, WorkbookValidationError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 2

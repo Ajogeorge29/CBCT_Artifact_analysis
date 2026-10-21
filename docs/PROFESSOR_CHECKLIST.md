@@ -13,6 +13,8 @@
 - [x] Rewrite the objective and hypotheses around peri-implant gray-value distributions.
 - [x] Explain why repeated points within a scan are not independent samples.
 - [x] Prepare a one-page meeting summary.
+- [x] Complete a trial-level paired analysis before predictive modelling.
+- [x] Run an exploratory grouped RTM feasibility comparison against linear and rule baselines.
 
 ## Deliverables
 
@@ -23,5 +25,7 @@
   `figure_2_intensity_distributions.png`
 - Revised framing: `docs/REVISED_OBJECTIVE_AND_HYPOTHESIS.md`
 - Statistical cautions: `docs/STATISTICAL_LIMITATIONS.md`
+- Paired trial analysis: `reports/tables/paired_trial_analysis.csv`
+- RTM feasibility: `reports/rtm_feasibility_report.md`
 - Meeting brief: `reports/meeting_summary.md`
 - Revised manuscript copies: `docs/revised/`

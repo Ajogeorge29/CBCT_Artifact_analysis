@@ -36,6 +36,13 @@ are outside the study.
   units. These are exploratory summaries, not independent replicated effects.
 - The reported E–F, G–H, and I–J p-values are not reproduced by the same Tukey procedure; the
   original method needs to be identified.
+- Trial-mean paired differences are directionally positive in all five planned comparisons, but
+  every exact two-sided sign-flip p-value is 0.25. With only three possibly technical trial pairs,
+  this does not establish statistical significance.
+- In five-fold leave-one-configuration-out validation, the confirmed-design RTM had pooled
+  MAE/RMSE 413.9/501.2, versus 400.7/485.8 for linear regression and 409.0/490.3 for the rule
+  baseline. Its clauses mostly repeated known condition/tray/anatomy patterns. Do not retain it as
+  a manuscript result; keep it as an appendix or future-work note.
 
 ## Main limitations
 
@@ -57,11 +64,14 @@ are outside the study.
 4. Identify the statistical procedure/software used for the second manuscript p-value table.
 5. Confirm the number of independent skulls and scan acquisitions. If there is one acquisition per
    condition, present inference as exploratory and plan independent replication.
-6. Approve the revised objective/hypothesis and supply qualitative ratings if those conclusions will
+6. Keep the current RTM feasibility result outside the manuscript results. Reconsider it only with
+   independent validation data and a signed-off mapping for positions 1–24.
+7. Approve the revised objective/hypothesis and supply qualitative ratings if those conclusions will
    remain in the manuscript.
 
 ## Requested meeting outcome
 
 Approve the data dictionary, experimental unit, primary matched contrasts, role of all three trials,
-and whether the current work is a descriptive pilot or has enough independent replication for a
-confirmatory mixed/repeated-measures analysis.
+whether the current work is a descriptive pilot or has enough independent replication for a
+confirmatory mixed/repeated-measures analysis, and the decision to exclude the current RTM result
+from the manuscript.

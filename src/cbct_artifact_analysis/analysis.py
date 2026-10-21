@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import product
 
 import numpy as np
 import pandas as pd
+from scipy.stats import t
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 
 from cbct_artifact_analysis.io import WorkbookData
@@ -34,6 +36,7 @@ class AuditResults:
     manuscript_reproduction: pd.DataFrame
     control_tukey_reproduction: pd.DataFrame
     matched_pair_sensitivity: pd.DataFrame
+    paired_trial_analysis: pd.DataFrame
     matched_p_reproduction: pd.DataFrame
     long: pd.DataFrame
     profile: object
@@ -288,6 +291,68 @@ def _matched_pair_sensitivity(scan_block: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _exact_sign_flip_p(differences: np.ndarray) -> float:
+    """Return the exact two-sided paired randomization p-value for a mean difference."""
+
+    observed = abs(float(np.mean(differences)))
+    statistics = [
+        abs(float(np.mean(differences * np.asarray(signs))))
+        for signs in product((-1.0, 1.0), repeat=len(differences))
+    ]
+    return float(np.mean(np.asarray(statistics) >= observed - 1e-12))
+
+
+def _paired_trial_analysis(scan_block: pd.DataFrame) -> pd.DataFrame:
+    """Analyze the five planned contrasts at the trial-mean level.
+
+    This reduces the most obvious point-level pseudoreplication. It does not turn the three
+    trials into independent experimental acquisitions; that status still needs confirmation.
+    """
+
+    means = scan_block.pivot(index="scan_id", columns="block", values="mean")
+    rows: list[dict[str, object]] = []
+    comparisons = [
+        (comparison, *details, "Alginate vs no alginate")
+        for comparison, details in MATCHED_PAIRS.items()
+    ] + [
+        (comparison, *details, "Tray sensitivity; both scans labelled alginate")
+        for comparison, details in TRAY_PAIR.items()
+    ]
+    for comparison, first_scan, second_scan, scenario, comparison_type in comparisons:
+        first = means.loc[first_scan].to_numpy(dtype=float)
+        second = means.loc[second_scan].to_numpy(dtype=float)
+        differences = second - first
+        n = len(differences)
+        difference_mean = float(np.mean(differences))
+        difference_sd = float(np.std(differences, ddof=1))
+        margin = float(t.ppf(0.975, df=n - 1) * difference_sd / np.sqrt(n))
+        rows.append(
+            {
+                "comparison": comparison,
+                "comparison_type": comparison_type,
+                "scenario": scenario,
+                "first_scan": first_scan,
+                "second_scan": second_scan,
+                "n_trial_pairs": n,
+                "first_mean_across_trials": float(np.mean(first)),
+                "second_mean_across_trials": float(np.mean(second)),
+                "mean_paired_difference": difference_mean,
+                "paired_difference_sd": difference_sd,
+                "difference_ci95_lower": difference_mean - margin,
+                "difference_ci95_upper": difference_mean + margin,
+                "median_paired_difference": float(np.median(differences)),
+                "minimum_paired_difference": float(np.min(differences)),
+                "maximum_paired_difference": float(np.max(differences)),
+                "same_direction_all_trials": bool(
+                    np.all(differences > 0) or np.all(differences < 0)
+                ),
+                "exact_sign_flip_p": _exact_sign_flip_p(differences),
+                "inference_status": "Exploratory; trials may be technical rather than independent",
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def _matched_p_reproduction(full_tukey: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for comparison, manuscript_p in MANUSCRIPT_MATCHED_P.items():
@@ -323,6 +388,7 @@ def run_audit(data: WorkbookData) -> AuditResults:
         manuscript_reproduction=_manuscript_reproduction(scan_block),
         control_tukey_reproduction=control_tukey,
         matched_pair_sensitivity=_matched_pair_sensitivity(scan_block),
+        paired_trial_analysis=_paired_trial_analysis(scan_block),
         matched_p_reproduction=_matched_p_reproduction(full_tukey),
         long=data.long,
         profile=data.profile,

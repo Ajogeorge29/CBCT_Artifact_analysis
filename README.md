@@ -35,6 +35,11 @@ the [data audit report](reports/data_audit_report.md). The formatted browser ver
 The professor-requested deliverables are indexed in
 [PROFESSOR_CHECKLIST.md](docs/PROFESSOR_CHECKLIST.md), including three numbered tables, two numbered
 figures, revised manuscript copies, and a [one-page meeting summary](reports/meeting_summary.md).
+The trial-level paired analysis is completed before the optional predictive work. An exploratory
+[Regression Tsetlin Machine feasibility report](reports/rtm_feasibility_report.md) compares grouped
+validation errors with linear-regression and rule-based baselines; it is not a validated predictor.
+The current RTM underperforms both baselines on the confirmed-design feature set, so the audit
+recommends keeping it out of the manuscript results.
 
 This is a data-quality and reproducibility audit, not a clinical claim. The data currently support
 descriptive exploration; confirmatory inference requires a defined experimental unit, documented
@@ -58,11 +63,14 @@ column schema, and adequate independent replication.
 ├── reports/
 │   ├── data_audit_report.html    # generated visual report
 │   ├── data_audit_report.md      # GitHub-readable report
+│   ├── rtm_feasibility_report.md # exploratory secondary analysis
 │   ├── figures/                  # aggregate plots only
 │   └── tables/                   # aggregate CSVs only
 ├── scripts/
 │   ├── privacy_guard.py          # blocks raw/private data from Git
+│   ├── run_rtm_feasibility.ps1   # isolated, offline-at-runtime RTM analysis
 │   └── run_analysis.ps1
+├── docker/rtm/                   # pinned Linux environment for the RTM extension
 ├── src/cbct_artifact_analysis/   # ingestion, audit, statistics, figures, report
 ├── tests/                        # synthetic-data tests; no private data required
 └── pyproject.toml
@@ -108,6 +116,18 @@ Or, after installing the package:
 The command validates the workbook before analysis. It fails loudly if sheet count, scan IDs,
 site counts, measurement count, or numeric completeness changes.
 
+Run the optional RTM feasibility experiment with Docker Desktop running:
+
+```powershell
+.\scripts\run_rtm_feasibility.ps1
+```
+
+The image is built before the workbook is mounted. The analysis container then runs with networking
+disabled, reads the repository/workbook through a read-only mount, and writes aggregate metrics,
+clause summaries, and a comparison figure only. This route is recommended because
+`pyTsetlinMachine` 0.6.6 is a legacy compiled extension without a compatible Windows wheel for the
+current Python environment.
+
 ## Analysis outputs
 
 The pipeline generates these aggregate artifacts:
@@ -117,11 +137,13 @@ The pipeline generates these aggregate artifacts:
 - exact reconciliation of manuscript means with workbook trial 1;
 - reproduction of the Scan A Tukey HSD table;
 - a sensitivity analysis for B–C, E–F, G–H, I–J, and the C–D tray comparison across all trials;
+- trial-mean paired estimates and exact sign-flip tests for those five comparisons;
 - zero-value and structural quality checks;
 - seven publication-oriented figures, including the two numbered professor figures;
 - Markdown and HTML audit reports;
 - a one-page meeting summary;
-- software-version run metadata.
+- software-version run metadata;
+- an optional grouped RTM feasibility report with linear and rule baselines.
 
 No cleaned row-level CSV is created by design.
 
@@ -135,6 +157,10 @@ No cleaned row-level CSV is created by design.
 - Scan conditions vary in implant count and location; Scan A also has no implant.
 - The manuscript's E–F, G–H, and I–J p-values are not reproduced by the same Tukey procedure used
   for the Scan A table, and the alternative method is not stated.
+- The exact location represented by measurement columns 1–24 is not validated. RTM models that add
+  the column index are sensitivity analyses and cannot support spatial interpretation.
+- There are only five scan-configuration families for grouped predictive validation. Model errors
+  are exploratory and do not demonstrate clinical generalization.
 
 Resolve the questions in [DATA_DICTIONARY_REQUIRED.md](docs/DATA_DICTIONARY_REQUIRED.md) before
 locking a final statistical analysis plan.

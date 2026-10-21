@@ -1,0 +1,7 @@
+model,feature_set,validation,n_measurements,n_configuration_folds,pooled_mae,pooled_rmse,macro_fold_mae,macro_fold_rmse
+Rule mean,confirmed_design,5-fold leave-one-scan-configuration-out,1296,5,408.9537,490.3066,407.7755,478.8755
+Linear regression,confirmed_design,5-fold leave-one-scan-configuration-out,1296,5,400.6993,485.7801,381.5387,455.9855
+Regression Tsetlin Machine,confirmed_design,5-fold leave-one-scan-configuration-out,1296,5,413.9314,501.1713,394.0247,468.1971
+Rule mean,design_plus_provisional_position,5-fold leave-one-scan-configuration-out,1296,5,360.2947,454.761,363.9824,444.6568
+Linear regression,design_plus_provisional_position,5-fold leave-one-scan-configuration-out,1296,5,363.0836,448.096,354.0233,434.9999
+Regression Tsetlin Machine,design_plus_provisional_position,5-fold leave-one-scan-configuration-out,1296,5,373.323,460.6694,355.7946,432.929

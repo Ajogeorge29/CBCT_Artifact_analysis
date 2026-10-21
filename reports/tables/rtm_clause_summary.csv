@@ -1,0 +1,31 @@
+feature_set,clause_id,clause_weight,literal_count,support_count,support_percent,mean_intensity_when_true,mean_intensity_when_false,observed_difference_true_minus_false,observed_association,clause,duplicate_clause_count
+confirmed_design,49,18,1,216,16.6667,513.8947,479.562,34.3326,higher,anatomical_site=Posterior mandible,6
+confirmed_design,9,15,5,576,44.4444,622.8343,375.244,247.5903,higher,alginate=yes AND tray_status=Present during acquisition AND NOT anatomical_site=Posterior mandible (no-implant control) AND NOT tray_status=None AND NOT tray_status=Removed before acquisition,1
+confirmed_design,83,15,4,288,22.2222,665.8522,433.6932,232.159,higher,alginate=yes AND NOT anatomical_site=Mandibular posterior AND NOT tray_status=None AND NOT trial=3,1
+confirmed_design,4,15,3,192,14.8148,443.0585,492.6277,-49.5692,lower,implant_count>=3 AND NOT anatomical_site=Mandibular anterior AND NOT trial=2,1
+confirmed_design,143,14,5,240,18.5185,614.9243,455.8205,159.1038,higher,tray_status=Present during acquisition AND NOT implant_count>=3 AND NOT tray_status=None AND NOT tray_status=Removed before acquisition AND NOT trial=1,1
+confirmed_design,156,14,3,216,16.6667,611.4074,460.0595,151.3479,higher,alginate=yes AND trial=1 AND NOT trial=3,1
+confirmed_design,82,14,5,264,20.3704,540.0272,471.2801,68.7471,higher,implant_count>=1 AND NOT anatomical_site=Mandibular posterior AND NOT anatomical_site=Posterior mandible (no-implant control) AND NOT trial=1 AND NOT trial=3,1
+confirmed_design,172,13,3,288,22.2222,657.1443,436.1812,220.9631,higher,NOT anatomical_site=Mandibular posterior AND NOT tray_status=None AND NOT trial=1,2
+confirmed_design,71,13,4,192,14.8148,396.5076,500.7235,-104.2159,lower,implant_count>=1 AND trial=3 AND NOT alginate=yes AND NOT anatomical_site=Posterior mandible (no-implant control),1
+confirmed_design,21,12,2,192,14.8148,630.1239,460.0946,170.0293,higher,anatomical_site=Mandibular anterior AND NOT trial=3,1
+confirmed_design,43,12,5,216,16.6667,551.8366,471.9736,79.863,higher,alginate=yes AND anatomical_site=Mandibular posterior AND NOT anatomical_site=Mandibular anterior AND NOT anatomical_site=Maxillary posterior AND NOT tray_status=None,1
+confirmed_design,185,12,6,336,25.9259,500.2883,480.0327,20.2557,higher,implant_count>=1 AND implant_count>=2 AND trial=3 AND NOT anatomical_site=Posterior mandible AND NOT trial=1 AND NOT trial=2,1
+confirmed_design,64,12,2,432,33.3333,474.6398,490.6063,-15.9666,lower,anatomical_site=Mandibular posterior AND NOT tray_status=Removed before acquisition,1
+confirmed_design,151,11,7,192,14.8148,698.2854,448.2404,250.0449,higher,implant_count>=2 AND tray_status=Present during acquisition AND NOT anatomical_site=Mandibular posterior AND NOT anatomical_site=Posterior mandible (no-implant control) AND NOT tray_status=None AND NOT tray_status=Removed before acquisition AND NOT trial=1,1
+confirmed_design,154,11,4,192,14.8148,599.7227,465.3818,134.3409,higher,implant_count>=1 AND anatomical_site=Mandibular anterior AND NOT anatomical_site=Maxillary posterior AND NOT trial=2,1
+design_plus_provisional_position,141,24,3,576,44.4444,622.8343,375.244,247.5903,higher,alginate=yes AND tray_status=Present during acquisition AND NOT tray_status=None,1
+design_plus_provisional_position,177,18,2,1188,91.6667,514.6635,162.1108,352.5527,higher,NOT provisional_measurement_position=11 AND NOT provisional_measurement_position=16,1
+design_plus_provisional_position,167,18,6,480,37.037,669.859,376.7107,293.1483,higher,alginate=yes AND tray_status=Present during acquisition AND NOT provisional_measurement_position=5 AND NOT provisional_measurement_position=12 AND NOT provisional_measurement_position=16 AND NOT provisional_measurement_position=24,1
+design_plus_provisional_position,74,17,2,54,4.1667,743.7399,474.0469,269.693,higher,provisional_measurement_position=6 AND NOT provisional_measurement_position=3,1
+design_plus_provisional_position,111,16,1,54,4.1667,975.3646,463.9763,511.3883,higher,provisional_measurement_position=5,12
+design_plus_provisional_position,52,15,1,54,4.1667,743.7245,474.0476,269.6769,higher,provisional_measurement_position=23,7
+design_plus_provisional_position,182,14,2,27,2.0833,1328.7033,467.339,861.3643,higher,provisional_measurement_position=6 AND NOT tray_status=None,3
+design_plus_provisional_position,196,13,5,27,2.0833,1083.2639,472.5612,610.7027,higher,alginate=yes AND provisional_measurement_position=1 AND NOT tray_status=None AND NOT provisional_measurement_position=7 AND NOT provisional_measurement_position=16,1
+design_plus_provisional_position,79,13,5,54,4.1667,975.3646,463.9763,511.3883,higher,provisional_measurement_position=5 AND NOT provisional_measurement_position=1 AND NOT provisional_measurement_position=16 AND NOT provisional_measurement_position=18 AND NOT provisional_measurement_position=21,1
+design_plus_provisional_position,41,13,4,594,45.8333,414.1765,545.4521,-131.2757,lower,implant_count>=1 AND NOT tray_status=Present during acquisition AND NOT provisional_measurement_position=2 AND NOT provisional_measurement_position=18,1
+design_plus_provisional_position,104,12,5,240,18.5185,693.0116,438.0733,254.9383,higher,anatomical_site=Mandibular anterior AND NOT provisional_measurement_position=6 AND NOT provisional_measurement_position=16 AND NOT provisional_measurement_position=18 AND NOT provisional_measurement_position=22,1
+design_plus_provisional_position,166,11,5,27,2.0833,1328.7033,467.339,861.3643,higher,provisional_measurement_position=6 AND NOT tray_status=None AND NOT provisional_measurement_position=3 AND NOT provisional_measurement_position=15 AND NOT provisional_measurement_position=22,1
+design_plus_provisional_position,193,11,2,42,3.2407,901.5164,471.3433,430.173,higher,provisional_measurement_position=23 AND NOT anatomical_site=Maxillary posterior,1
+design_plus_provisional_position,91,11,5,240,18.5185,689.3412,438.9075,250.4337,higher,anatomical_site=Mandibular anterior AND NOT provisional_measurement_position=7 AND NOT provisional_measurement_position=8 AND NOT provisional_measurement_position=14 AND NOT provisional_measurement_position=16,1
+design_plus_provisional_position,149,11,2,216,16.6667,647.5796,452.825,194.7546,higher,alginate=yes AND trial=2,1

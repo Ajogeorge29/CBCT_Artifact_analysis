@@ -118,6 +118,18 @@ are labelled as containing alginate and differ in tray status. No point-level p-
 <h2>Trial sensitivity analysis</h2>
 <div class="table-wrap"><table><thead><tr><th>comparison</th><th>scenario</th><th>trial</th><th>first_scan_mean</th><th>second_scan_mean</th><th>difference_second_minus_first</th></tr></thead><tbody><tr><td>B-C</td><td>1 implant</td><td>1</td><td>395.8357</td><td>534.3561</td><td>138.5203</td></tr><tr><td>B-C</td><td>1 implant</td><td>2</td><td>345.9175</td><td>590.7710</td><td>244.8534</td></tr><tr><td>B-C</td><td>1 implant</td><td>3</td><td>460.3228</td><td>518.8053</td><td>58.4825</td></tr><tr><td>E-F</td><td>2 implants, contralateral arches</td><td>1</td><td>261.0915</td><td>632.2047</td><td>371.1131</td></tr><tr><td>E-F</td><td>2 implants, contralateral arches</td><td>2</td><td>272.0713</td><td>650.6218</td><td>378.5505</td></tr><tr><td>E-F</td><td>2 implants, contralateral arches</td><td>3</td><td>283.0183</td><td>645.8947</td><td>362.8763</td></tr><tr><td>G-H</td><td>2 implants, same jaw</td><td>1</td><td>465.3335</td><td>598.6711</td><td>133.3376</td></tr><tr><td>G-H</td><td>2 implants, same jaw</td><td>2</td><td>474.1475</td><td>661.3955</td><td>187.2480</td></tr><tr><td>G-H</td><td>2 implants, same jaw</td><td>3</td><td>480.9565</td><td>561.9211</td><td>80.9646</td></tr><tr><td>I-J</td><td>3 implants</td><td>1</td><td>372.9688</td><td>639.1292</td><td>266.1603</td></tr><tr><td>I-J</td><td>3 implants</td><td>2</td><td>376.7799</td><td>669.5394</td><td>292.7595</td></tr><tr><td>I-J</td><td>3 implants</td><td>3</td><td>394.5961</td><td>625.5557</td><td>230.9596</td></tr><tr><td>C-D</td><td>Alginate with tray vs tray removed</td><td>1</td><td>534.3561</td><td>589.1712</td><td>54.8151</td></tr><tr><td>C-D</td><td>Alginate with tray vs tray removed</td><td>2</td><td>590.7710</td><td>604.7926</td><td>14.0216</td></tr><tr><td>C-D</td><td>Alginate with tray vs tray removed</td><td>3</td><td>518.8053</td><td>585.0799</td><td>66.2745</td></tr></tbody></table></div>
 <figure><img src="figures/matched_pair_sensitivity.png" alt="Matched differences across trials"><figcaption>Positive B–C, E–F, G–H and I–J values mean the alginate scan had higher mean PIV.</figcaption></figure>
+<h2>Paired trial-level analysis</h2>
+<div class="table-wrap"><table><thead><tr><th>comparison</th><th>comparison_type</th><th>n_trial_pairs</th><th>first_mean_across_trials</th><th>second_mean_across_trials</th><th>mean_paired_difference</th><th>paired_difference_sd</th><th>difference_ci95_lower</th><th>difference_ci95_upper</th><th>exact_sign_flip_p</th></tr></thead><tbody><tr><td>B-C</td><td>Alginate vs no alginate</td><td>3</td><td>400.6920</td><td>547.9775</td><td>147.2854</td><td>93.4941</td><td>-84.9669</td><td>379.5377</td><td>0.2500</td></tr><tr><td>E-F</td><td>Alginate vs no alginate</td><td>3</td><td>272.0604</td><td>642.9071</td><td>370.8467</td><td>7.8405</td><td>351.3698</td><td>390.3236</td><td>0.2500</td></tr><tr><td>G-H</td><td>Alginate vs no alginate</td><td>3</td><td>473.4791</td><td>607.3292</td><td>133.8501</td><td>53.1436</td><td>1.8342</td><td>265.8660</td><td>0.2500</td></tr><tr><td>I-J</td><td>Alginate vs no alginate</td><td>3</td><td>381.4483</td><td>644.7414</td><td>263.2931</td><td>30.9996</td><td>186.2860</td><td>340.3003</td><td>0.2500</td></tr><tr><td>C-D</td><td>Tray sensitivity; both scans labelled alginate</td><td>3</td><td>547.9775</td><td>593.0145</td><td>45.0371</td><td>27.4645</td><td>-23.1885</td><td>113.2627</td><td>0.2500</td></tr></tbody></table></div>
+<div class="callout warning"><strong>Exploratory inference only.</strong> The exact two-sided
+sign-flip p-value is 0.25 for every comparison, the minimum possible with three same-direction
+pairs. Trials may be technical repeats rather than independent acquisitions, so these results do
+not establish statistical significance.</div>
+<h2>Secondary RTM feasibility analysis</h2>
+<p>The confirmed-design Regression Tsetlin Machine had pooled MAE/RMSE of 413.9/501.2 gray-value
+units, compared with 400.7/485.8 for linear regression and 409.0/490.3 for the rule baseline. Its
+clauses mainly restated already-visible condition, tray, anatomy, and trial patterns. It should not
+be retained as a manuscript result. See <code>rtm_feasibility_report.md</code>; the 1–24 position
+variant is sensitivity-only because those positions lack validated radius/direction labels.</p>
 <h3>Unresolved manuscript p-values</h3>
 <p>The manuscript does not name the method for its second p-value table. Applying the same ten-group
 Tukey analysis does not reproduce those three values:</p>
@@ -141,11 +153,13 @@ Tukey analysis does not reproduce those three values:</p>
 <li>Document and reproduce the E–F, G–H, and I–J p-value method.</li>
 <li>Add blinded qualitative ratings and a justified inter-rater agreement analysis.</li>
 <li>Archive the final environment, source checksum, software versions, and analysis log.</li>
+<li>Keep the current RTM outside the manuscript results unless independent validation and a signed-off position map support re-analysis.</li>
 </ol>
 
 <h2>Reproduce locally</h2>
 <pre><code>python -m pip install -e ".[dev]"
 python -m cbct_artifact_analysis run
+.\scripts\run_rtm_feasibility.ps1
 python -m pytest
 python scripts/privacy_guard.py --tracked</code></pre>
 

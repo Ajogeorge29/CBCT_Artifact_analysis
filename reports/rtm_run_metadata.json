@@ -1,0 +1,30 @@
+{
+  "privacy": "Private workbook read-only; aggregate outputs only; no row-level predictions",
+  "validation": "5-fold leave-one-scan-configuration-out",
+  "configuration_groups": {
+    "A": "control_no_implant",
+    "B": "posterior_one_implant",
+    "C": "posterior_one_implant",
+    "D": "posterior_one_implant",
+    "E": "opposing_arches_two_implants",
+    "F": "opposing_arches_two_implants",
+    "G": "same_jaw_two_implants",
+    "H": "same_jaw_two_implants",
+    "I": "three_implants",
+    "J": "three_implants"
+  },
+  "feature_sets": {
+    "confirmed_design": false,
+    "design_plus_provisional_position": true
+  },
+  "rtm_library": "pyTsetlinMachine 0.6.6",
+  "rtm_parameters": {
+    "number_of_clauses": 200,
+    "T": 1000,
+    "s": 2.75,
+    "weighted_clauses": true,
+    "max_included_literals": 6,
+    "epochs": 50
+  },
+  "retain_in_manuscript": false
+}

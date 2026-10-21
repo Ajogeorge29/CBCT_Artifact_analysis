@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from cbct_artifact_analysis.analysis import run_audit
+import numpy as np
+
+from cbct_artifact_analysis.analysis import _exact_sign_flip_p, run_audit
 from cbct_artifact_analysis.io import load_master_workbook
 
 
@@ -18,6 +20,9 @@ def test_audit_outputs_are_aggregate_and_complete(synthetic_workbook):
     assert results.matched_comparisons["comparison"].eq("C-D").sum() == 1
     assert len(results.control_tukey_reproduction) == 9
     assert len(results.matched_pair_sensitivity) == 5 * 3
+    assert len(results.paired_trial_analysis) == 5
+    assert results.paired_trial_analysis["n_trial_pairs"].eq(3).all()
+    assert results.paired_trial_analysis["exact_sign_flip_p"].between(0, 1).all()
     assert len(results.matched_p_reproduction) == 3
     assert (
         results.quality_summary.loc[
@@ -25,3 +30,7 @@ def test_audit_outputs_are_aggregate_and_complete(synthetic_workbook):
         ].item()
         == 0
     )
+
+
+def test_exact_sign_flip_minimum_with_three_same_direction_pairs():
+    assert _exact_sign_flip_p(np.array([1.0, 2.0, 3.0])) == 0.25
