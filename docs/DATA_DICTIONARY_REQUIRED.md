@@ -30,9 +30,9 @@ Complete one row for every numeric column C–BV. Do not infer this mapping from
 
 | Excel range | Pipeline label | Meaning to supply |
 | --- | --- | --- |
-| C–Z | Block 1, measurements 1–24 | Block identity; radius/direction order; slice/repeat/reader |
-| AA–AX | Block 2, measurements 1–24 | Block identity; radius/direction order; slice/repeat/reader |
-| AY–BV | Block 3, measurements 1–24 | Block identity; radius/direction order; slice/repeat/reader |
+| C–Z | Trial 1, measurements 1–24 | Trial definition; radius/direction order; slice/repeat/reader |
+| AA–AX | Trial 2, measurements 1–24 | Trial definition; radius/direction order; slice/repeat/reader |
+| AY–BV | Trial 3, measurements 1–24 | Trial definition; radius/direction order; slice/repeat/reader |
 
 Recommended final long-form fields:
 

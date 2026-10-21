@@ -1,0 +1,55 @@
+scan_id,site_code,anatomical_site,trial,measurement_count,zero_count,zero_percent
+A,S1LB,Posterior mandible (no-implant control),1,24,12,50.0
+A,S1LB,Posterior mandible (no-implant control),2,24,12,50.0
+A,S1LB,Posterior mandible (no-implant control),3,24,12,50.0
+B,S2LB,Posterior mandible,1,24,8,33.3333
+B,S2LB,Posterior mandible,2,24,5,20.8333
+B,S2LB,Posterior mandible,3,24,9,37.5
+C,S3LB,Posterior mandible,1,24,6,25.0
+C,S3LB,Posterior mandible,2,24,6,25.0
+C,S3LB,Posterior mandible,3,24,7,29.1667
+D,S4LB,Posterior mandible,1,24,6,25.0
+D,S4LB,Posterior mandible,2,24,8,33.3333
+D,S4LB,Posterior mandible,3,24,6,25.0
+E,S5LB,Mandibular posterior,1,24,8,33.3333
+E,S5LB,Mandibular posterior,2,24,9,37.5
+E,S5LB,Mandibular posterior,3,24,9,37.5
+E,S5UB,Maxillary posterior,1,24,11,45.8333
+E,S5UB,Maxillary posterior,2,24,7,29.1667
+E,S5UB,Maxillary posterior,3,24,9,37.5
+F,S10LB,Mandibular posterior,1,24,6,25.0
+F,S10LB,Mandibular posterior,2,24,6,25.0
+F,S10LB,Mandibular posterior,3,24,6,25.0
+F,S10UB,Maxillary posterior,1,24,1,4.1667
+F,S10UB,Maxillary posterior,2,24,0,0.0
+F,S10UB,Maxillary posterior,3,24,1,4.1667
+G,S6LB,Mandibular posterior,1,24,7,29.1667
+G,S6LB,Mandibular posterior,2,24,8,33.3333
+G,S6LB,Mandibular posterior,3,24,6,25.0
+G,S6LF,Mandibular anterior,1,24,8,33.3333
+G,S6LF,Mandibular anterior,2,24,8,33.3333
+G,S6LF,Mandibular anterior,3,24,9,37.5
+H,S7B,Mandibular posterior,1,24,6,25.0
+H,S7B,Mandibular posterior,2,24,6,25.0
+H,S7B,Mandibular posterior,3,24,6,25.0
+H,S7F,Mandibular anterior,1,24,3,12.5
+H,S7F,Mandibular anterior,2,24,1,4.1667
+H,S7F,Mandibular anterior,3,24,4,16.6667
+I,S8LB,Mandibular posterior,1,24,10,41.6667
+I,S8LB,Mandibular posterior,2,24,7,29.1667
+I,S8LB,Mandibular posterior,3,24,10,41.6667
+I,S8LF,Mandibular anterior,1,24,9,37.5
+I,S8LF,Mandibular anterior,2,24,7,29.1667
+I,S8LF,Mandibular anterior,3,24,8,33.3333
+I,S8UB,Maxillary posterior,1,24,11,45.8333
+I,S8UB,Maxillary posterior,2,24,11,45.8333
+I,S8UB,Maxillary posterior,3,24,7,29.1667
+J,S9LB,Mandibular posterior,1,24,7,29.1667
+J,S9LB,Mandibular posterior,2,24,8,33.3333
+J,S9LB,Mandibular posterior,3,24,6,25.0
+J,S9LF,Mandibular anterior,1,24,1,4.1667
+J,S9LF,Mandibular anterior,2,24,1,4.1667
+J,S9LF,Mandibular anterior,3,24,1,4.1667
+J,S9UB,Maxillary posterior,1,24,4,16.6667
+J,S9UB,Maxillary posterior,2,24,4,16.6667
+J,S9UB,Maxillary posterior,3,24,4,16.6667

@@ -1,0 +1,11 @@
+scan,implant_number,anatomical_site,alginate,tray_status,design_note
+A,0,Posterior mandible measurement site; no implant,No,None,No-implant control
+B,1,Posterior mandible,No,None,One posterior mandibular implant
+C,1,Posterior mandible,Yes,Present during acquisition,One posterior mandibular implant
+D,1,Posterior mandible,Yes,Removed before acquisition,Manuscript labels alginate present; confirm what remained after tray removal
+E,2,Mandibular posterior + maxillary posterior (same side),No,None,Two implants in opposing arches
+F,2,Mandibular posterior + maxillary posterior (same side),Yes,Present during acquisition,Two implants in opposing arches
+G,2,Mandibular anterior + mandibular posterior,No,None,Two implants in the same jaw
+H,2,Mandibular anterior + mandibular posterior,Yes,Present during acquisition,Two implants in the same jaw
+I,3,Mandibular anterior + mandibular posterior + maxillary posterior,No,None,Three implant locations
+J,3,Mandibular anterior + mandibular posterior + maxillary posterior,Yes,Present during acquisition,Three implant locations

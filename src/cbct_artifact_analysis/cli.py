@@ -28,6 +28,10 @@ DEFAULT_OUTPUT = Path("reports")
 def _write_aggregate_tables(results: object, table_dir: Path) -> list[Path]:
     table_dir.mkdir(parents=True, exist_ok=True)
     tables = {
+        "table_1_experimental_design.csv": results.experimental_design,
+        "table_2_site_descriptive_statistics.csv": results.site_descriptive_statistics,
+        "table_3_matched_comparisons.csv": results.matched_comparisons,
+        "zero_audit_by_scan_site_trial.csv": results.zero_by_scan_site_trial,
         "quality_summary.csv": results.quality_summary,
         "scan_block_summary.csv": results.scan_block_summary,
         "scan_overall_summary.csv": results.scan_overall_summary,
@@ -72,13 +76,14 @@ def _run(input_path: Path, output_dir: Path) -> int:
     results = run_audit(data)
     figures = create_figures(results, output_dir / "figures")
     table_paths = _write_aggregate_tables(results, output_dir / "tables")
-    markdown_path, html_path = write_reports(results, figures, output_dir)
+    markdown_path, html_path, meeting_path = write_reports(results, figures, output_dir)
     metadata_path = _write_run_metadata(input_path, output_dir)
 
     print(f"Validated {len(data.sites)} site rows and {len(data.long)} numeric measurements.")
     print(f"Wrote {len(table_paths)} aggregate tables to {output_dir / 'tables'}.")
     print(f"Markdown report: {markdown_path}")
     print(f"HTML report: {html_path}")
+    print(f"Meeting summary: {meeting_path}")
     print(f"Run metadata: {metadata_path}")
     print("Privacy check: no row-level table was written.")
     return 0

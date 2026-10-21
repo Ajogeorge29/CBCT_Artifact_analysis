@@ -49,6 +49,14 @@ def _report_context(results: AuditResults, figures: dict[str, str]) -> dict[str,
     matched = results.matched_pair_sensitivity
     alginate_pairs = matched.loc[matched["comparison"].isin(["B-C", "E-F", "G-H", "I-J"])]
     all_positive = bool(alginate_pairs["difference_second_minus_first"].gt(0).all())
+    professor_matched = results.matched_comparisons.loc[
+        results.matched_comparisons["comparison_type"].eq("Alginate vs no alginate")
+    ]
+    positive_site_count = int(professor_matched["difference_second_minus_first"].gt(0).sum())
+    means_display = results.manuscript_reproduction.rename(
+        columns={"workbook_block_1_mean": "workbook_trial_1_mean"}
+    )
+    sensitivity_display = results.matched_pair_sensitivity.rename(columns={"block": "trial"})
     return {
         "generated_date": date.today().isoformat(),
         "profile": results.profile,
@@ -62,18 +70,28 @@ def _report_context(results: AuditResults, figures: dict[str, str]) -> dict[str,
             results.control_tukey_reproduction["reproduces_at_3dp"].sum()
         ),
         "all_positive": "Yes" if all_positive else "No",
+        "positive_site_count": positive_site_count,
+        "matched_site_count": len(professor_matched),
+        "matched_difference_min": float(professor_matched["difference_second_minus_first"].min()),
+        "matched_difference_max": float(professor_matched["difference_second_minus_first"].max()),
         "block_range_low": float(block_means.min(axis=1).min()),
         "block_range_high": float(block_means.max(axis=1).max()),
         "figures": figures,
         "quality_md": _markdown_table(results.quality_summary),
-        "means_md": _markdown_table(results.manuscript_reproduction),
+        "table_1_md": _markdown_table(results.experimental_design),
+        "table_2_md": _markdown_table(results.site_descriptive_statistics),
+        "table_3_md": _markdown_table(results.matched_comparisons),
+        "means_md": _markdown_table(means_display),
         "tukey_md": _markdown_table(results.control_tukey_reproduction),
-        "matched_md": _markdown_table(results.matched_pair_sensitivity),
+        "matched_md": _markdown_table(sensitivity_display),
         "matched_p_md": _markdown_table(results.matched_p_reproduction),
         "quality_html": _html_table(results.quality_summary),
-        "means_html": _html_table(results.manuscript_reproduction),
+        "table_1_html": _html_table(results.experimental_design),
+        "table_2_html": _html_table(results.site_descriptive_statistics),
+        "table_3_html": _html_table(results.matched_comparisons),
+        "means_html": _html_table(means_display),
         "tukey_html": _html_table(results.control_tukey_reproduction),
-        "matched_html": _html_table(results.matched_pair_sensitivity),
+        "matched_html": _html_table(sensitivity_display),
         "matched_p_html": _html_table(results.matched_p_reproduction),
     }
 
@@ -86,16 +104,16 @@ Generated: {{ generated_date }}
 
 The workbook is structurally complete at the cell level, but it is not analysis-ready without a
 data dictionary. It contains **{{ measurement_count }} numeric measurements** across 18 implant-site
-rows and 10 scans, arranged as three unlabelled blocks of 24 values. The manuscripts describe only
-24 PIV measurements per site (eight points at three radii), while the workbook stores 72.
+rows and 10 scans, arranged as three trial blocks of 24 values. The manuscripts describe 24 PIV
+measurements per site (eight points at three radii); the spreadsheet contains three such trials.
 
 The published scan means reproduce for **{{ mean_reproduction_count }}/10 scans** only when the
-first 24-value block is used. The reported Scan A comparison p-values reproduce for
-**{{ control_p_reproduction_count }}/9 contrasts** as a ten-group Tukey HSD on those same block 1
-measurements. This makes the computation traceable, but it does not resolve whether block 1 was a
-pre-specified endpoint or why blocks 2 and 3 were excluded.
+first 24-measurement trial is used. The reported Scan A comparison p-values reproduce for
+**{{ control_p_reproduction_count }}/9 contrasts** as a ten-group Tukey HSD on those same trial 1
+measurements. This makes the computation traceable, but it does not resolve whether trial 1 was a
+pre-specified endpoint or why trials 2 and 3 were excluded from the reported values.
 
-Across all three blocks, all four like-for-like alginate contrasts (B–C, E–F, G–H, I–J) have a
+Across all three trials, all four like-for-like alginate contrasts (B–C, E–F, G–H, I–J) have a
 positive descriptive change in mean PIV: **{{ all_positive }}**. This directional consistency is
 useful, but it is not by itself evidence of statistical independence or generalizability.
 
@@ -119,25 +137,54 @@ Important structural observations:
 
 ![Zero-value prevalence]({{ figures.zero_rates }})
 
+The complete scan/site/trial zero audit is exported as
+`tables/zero_audit_by_scan_site_trial.csv`. Zeros are counted and retained; none are deleted or
+converted to missing values.
+
+## Corrected study framing
+
+**Revised objective.** To characterize and compare peri-implant CBCT gray-value distributions at
+standardized sampling locations around titanium implants in matched scan configurations acquired
+with and without alginate, and to assess consistency across three trials and tray status.
+
+**Revised hypothesis.** The null hypothesis is that matched alginate and no-alginate scans have the
+same peri-implant gray-value distribution. The research hypothesis is that the distributions differ.
+The direction and magnitude are estimated rather than presupposed. Gray-value differences are a
+surrogate imaging outcome and do not, by themselves, demonstrate that metal artifact was reduced or
+worsened.
+
+The study remains a CBCT metal-artifact study. Optical scanning, dimensional accuracy, and material
+shrinkage are outside the dataset and are not interpreted.
+
+## Table 1. Experimental design
+
+{{ table_1_md }}
+
+## Table 2. Site-level descriptive statistics
+
+Each row summarizes all 72 retained measurements for one site (3 trials × 24 measurements).
+
+{{ table_2_md }}
+
 ## Manuscript mean reproduction
 
 {{ means_md }}
 
-Nine printed means match block 1 after rounding to two decimals. Scan F is 632.2047 in the workbook
+Nine printed means match trial 1 after rounding to two decimals. Scan F is 632.2047 in the workbook
 (632.20 at two decimals) but 632.21 in both manuscripts. Every absolute discrepancy is below 0.006,
-so block 1 is clearly the source, but the Scan F rounding/source-version discrepancy should be fixed.
-Using all three blocks changes the descriptive scan means, demonstrating that the unlabelled block
+so trial 1 is clearly the source, but the Scan F rounding/source-version discrepancy should be fixed.
+Using all three trials changes the descriptive scan means, demonstrating that the trial selection
 choice is analytically material.
 
-![Scan means across blocks]({{ figures.block_means }})
+![Scan means across trials]({{ figures.block_means }})
 
-![Block 1 distributions]({{ figures.block_one_distributions }})
+![Trial 1 distributions]({{ figures.block_one_distributions }})
 
 ## Reported Scan A comparisons
 
 {{ tukey_md }}
 
-These values reproduce a Tukey HSD across ten scan-ID groups using block 1. The individual PIV
+These values reproduce a Tukey HSD across ten scan-ID groups using trial 1. The individual PIV
 locations are nested within implant sites and scan acquisitions. Treating them as independent
 replicates is therefore a likely pseudoreplication risk unless the protocol supplies a defensible
 independence argument. The control also has no implant, so its contrast with implant scans combines
@@ -145,14 +192,30 @@ implant presence, implant number/location, and alginate/tray conditions.
 
 ![Control contrasts]({{ figures.control_contrasts }})
 
-## Matched-configurations sensitivity analysis
+## Table 3. Matched comparisons
+
+The four alginate/no-alginate scan pairs are matched at their component anatomical sites. C–D is
+listed separately because both scans are labelled as containing alginate and differ in tray status.
+No point-level p-values are presented in this table.
+
+{{ table_3_md }}
+
+## Figure 1. Matched differences
+
+![Matched peri-implant means]({{ figures.figure_1_matched }})
+
+## Figure 2. Intensity distributions
+
+![All-trial intensity distributions]({{ figures.figure_2_distributions }})
+
+## Trial sensitivity analysis
 
 {{ matched_md }}
 
-![Matched contrasts across blocks]({{ figures.matched_differences }})
+![Matched contrasts across trials]({{ figures.matched_differences }})
 
 The manuscript's second p-value table is not reproduced by applying the same ten-group Tukey HSD
-to block 1:
+to trial 1:
 
 {{ matched_p_md }}
 
@@ -162,10 +225,10 @@ result, and the I–J conclusion is close to 0.05 in the manuscript.
 
 ## Statistical and study-design risks
 
-1. **Unknown measurement schema.** The 72 cells per site need explicit block, radius, direction,
+1. **Incomplete measurement schema.** The 72 cells per site need explicit trial, radius, direction,
    slice/repeat, observer, units, and zero-value definitions.
 2. **Unexplained endpoint selection.** Two-thirds of the stored measurements are absent from the
-   manuscript mean calculation. Selection should be justified prospectively or all blocks analyzed
+   manuscript mean calculation. Selection should be justified prospectively or all trials analyzed
    with a stated repeated-measures model.
 3. **Experimental unit ambiguity.** Multiple PIV points from the same scan are correlated technical
    measurements, not obviously independent biological/scan replicates. Confidence intervals and
@@ -180,10 +243,10 @@ result, and the I–J conclusion is close to 0.05 in the manuscript.
 
 ## Recommended remediation before submission
 
-1. Freeze a data dictionary mapping every column and site code, including what blocks 1–3 and zero
+1. Freeze a data dictionary mapping every column and site code, including what trials 1–3 and zero
    mean; preserve the workbook unchanged as a read-only source artifact outside Git.
-2. Reconcile the primary endpoint with all three blocks and document why the existing manuscript
-   used block 1 only.
+2. Reconcile the primary endpoint with all three trials and document why the existing manuscript
+   used trial 1 only.
 3. Identify the experimental unit and fit a pre-specified repeated/mixed-effects analysis (for
    example, measurements nested within implant/site and scan/skull) only if the number of
    independent units supports it. Otherwise present this as an exploratory/descriptive ex-vivo
@@ -259,12 +322,12 @@ must be resolved before its inferential results are submission-ready.</p>
 is ignored by Git, and is never exported row-by-row. All tables and figures below are aggregate.</div>
 
 <h2>Executive finding</h2>
-<p>The workbook holds 72 values per site in three unlabelled 24-value blocks. The manuscripts
-describe 24 values per site. Nine of ten scan means reproduce at two decimals from block 1; Scan F
+<p>The workbook holds 72 values per site in three 24-measurement trial blocks. The manuscripts
+describe 24 values per site. Nine of ten scan means reproduce at two decimals from trial 1; Scan F
 is 632.2047 in the workbook (632.20 at two decimals) but 632.21 in both manuscripts. All nine Scan A
-p-values reproduce as a ten-group Tukey HSD on block 1. That identifies the prior calculation but
+p-values reproduce as a ten-group Tukey HSD on trial 1. That identifies the prior calculation but
 leaves two-thirds of the stored measurements unexplained.</p>
-<p>All four like-for-like alginate comparisons move toward higher mean PIV in all three blocks.
+<p>All four like-for-like alginate comparisons move toward higher mean PIV in all three trials.
 This is descriptively consistent, but the PIV locations are nested technical readings within scans;
 they are not automatically independent experimental replicates.</p>
 
@@ -276,23 +339,56 @@ they are not automatically independent experimental replicates.</p>
 <li>{{ zero_count }} values are zero; the file does not define whether zero is valid PIV, clipping/background, or encoded missingness.</li>
 <li>Qualitative Likert ratings are absent, so inter-rater reliability cannot be audited.</li>
 </ul>
-<figure><img src="{{ figures.zero_rates }}" alt="Heatmap of zero rates"><figcaption>Zero prevalence varies by scan and unlabelled block.</figcaption></figure>
+<figure><img src="{{ figures.zero_rates }}" alt="Heatmap of zero rates"><figcaption>Zero prevalence varies by scan and trial. Zeros were retained.</figcaption></figure>
+<p>The complete scan/site/trial zero audit is available in
+<code>tables/zero_audit_by_scan_site_trial.csv</code>.</p>
+
+<h2>Corrected study framing</h2>
+<p><strong>Revised objective.</strong> To characterize and compare peri-implant CBCT gray-value
+distributions at standardized sampling locations around titanium implants in matched scan
+configurations acquired with and without alginate, and to assess consistency across three trials
+and tray status.</p>
+<p><strong>Revised hypothesis.</strong> The null hypothesis is that matched alginate and no-alginate
+scans have the same peri-implant gray-value distribution. The research hypothesis is that the
+distributions differ. Direction and magnitude are estimated rather than presupposed. Gray-value
+differences are a surrogate imaging outcome and do not by themselves demonstrate artifact reduction
+or worsening.</p>
+<p>The study remains a CBCT metal-artifact study. Optical scanning, dimensional accuracy, and
+material shrinkage are outside the dataset and are not interpreted.</p>
+
+<h2>Table 1. Experimental design</h2>
+{{ table_1_html | safe }}
+
+<h2>Table 2. Site-level descriptive statistics</h2>
+<p>Each row summarizes all 72 retained measurements for one site (3 trials × 24 measurements).</p>
+{{ table_2_html | safe }}
 
 <h2>Manuscript mean reproduction</h2>
 {{ means_html | safe }}
-<figure><img src="{{ figures.block_means }}" alt="Scan means across all blocks"><figcaption>The printed manuscript means derive from block 1; Scan F differs by 0.0053.</figcaption></figure>
-<figure><img src="{{ figures.block_one_distributions }}" alt="Block 1 distributions"><figcaption>Point distributions are descriptive; points are nested within scan/site.</figcaption></figure>
+<figure><img src="{{ figures.block_means }}" alt="Scan means across all trials"><figcaption>The printed manuscript means derive from trial 1; Scan F differs by 0.0053.</figcaption></figure>
+<figure><img src="{{ figures.block_one_distributions }}" alt="Trial 1 distributions"><figcaption>Point distributions are descriptive; points are nested within scan/site.</figcaption></figure>
 
 <h2>Scan A comparisons</h2>
 {{ tukey_html | safe }}
 <div class="callout warning"><strong>Inference warning.</strong> Tukey's multiplicity adjustment is
 reproduced, but the calculation treats nested PIV locations as group observations. Unless their
 independence is defensible, standard errors may be too small. Scan A also differs by implant presence.</div>
-<figure><img src="{{ figures.control_contrasts }}" alt="Tukey contrasts against control"><figcaption>Simultaneous 95% intervals from the reproduced block 1 Tukey model.</figcaption></figure>
+<figure><img src="{{ figures.control_contrasts }}" alt="Tukey contrasts against control"><figcaption>Simultaneous 95% intervals from the reproduced trial 1 Tukey model.</figcaption></figure>
 
-<h2>Matched-configuration sensitivity</h2>
+<h2>Table 3. Matched comparisons</h2>
+<p>The alginate/no-alginate scans are paired by anatomical site. C–D is separate because both scans
+are labelled as containing alginate and differ in tray status. No point-level p-values are reported.</p>
+{{ table_3_html | safe }}
+
+<h2>Figure 1. Matched differences</h2>
+<figure><img src="{{ figures.figure_1_matched }}" alt="Matched peri-implant gray-value means"><figcaption>Lines connect the no-alginate and alginate mean for each comparable anatomical site.</figcaption></figure>
+
+<h2>Figure 2. Intensity distributions</h2>
+<figure><img src="{{ figures.figure_2_distributions }}" alt="All-trial gray-value distributions"><figcaption>Boxplots show variability and outliers; trial means are overlaid.</figcaption></figure>
+
+<h2>Trial sensitivity analysis</h2>
 {{ matched_html | safe }}
-<figure><img src="{{ figures.matched_differences }}" alt="Matched differences across blocks"><figcaption>Positive B–C, E–F, G–H and I–J values mean the alginate scan had higher mean PIV.</figcaption></figure>
+<figure><img src="{{ figures.matched_differences }}" alt="Matched differences across trials"><figcaption>Positive B–C, E–F, G–H and I–J values mean the alginate scan had higher mean PIV.</figcaption></figure>
 <h3>Unresolved manuscript p-values</h3>
 <p>The manuscript does not name the method for its second p-value table. Applying the same ten-group
 Tukey analysis does not reproduce those three values:</p>
@@ -300,8 +396,8 @@ Tukey analysis does not reproduce those three values:</p>
 
 <h2>Risks requiring resolution</h2>
 <ol>
-<li><strong>Unknown schema:</strong> define block, radius, direction, repeat/slice, observer, unit, and zero semantics.</li>
-<li><strong>Endpoint selection:</strong> explain why block 1 was primary or reanalyze all blocks using a stated repeated-measures model.</li>
+<li><strong>Incomplete schema:</strong> define trial, radius, direction, repeat/slice, observer, unit, and zero semantics.</li>
+<li><strong>Endpoint selection:</strong> explain why trial 1 was primary or reanalyze all trials using a stated repeated-measures model.</li>
 <li><strong>Experimental unit:</strong> PIV points within a scan are correlated; identify independent skull/scan/implant replication.</li>
 <li><strong>Confounding:</strong> scan IDs change implant number/location and alginate; Scan A also removes the implant.</li>
 <li><strong>Audit trail:</strong> link CBCT IDs, ROI/slice coordinates, extraction code/version, and qualitative scores.</li>
@@ -311,7 +407,7 @@ Tukey analysis does not reproduce those three values:</p>
 <h2>Recommended remediation</h2>
 <ol>
 <li>Freeze a signed-off data dictionary and preserve the workbook as an immutable private source.</li>
-<li>Reconcile all three blocks with the manuscript endpoint before further inference.</li>
+<li>Reconcile all three trials with the manuscript endpoint before further inference.</li>
 <li>Use planned matched contrasts and a justified hierarchical/repeated model only when independent replication supports it.</li>
 <li>Document and reproduce the E–F, G–H, and I–J p-value method.</li>
 <li>Add blinded qualitative ratings and a justified inter-rater agreement analysis.</li>
@@ -330,17 +426,90 @@ No row-level measurements are embedded in this report.</p>
 """
 
 
+MEETING_TEMPLATE = """# One-page meeting summary: CBCT alginate study
+
+Prepared: {{ generated_date }}
+
+## Study question
+
+Do peri-implant CBCT gray-value distributions differ between anatomically matched scans acquired
+with and without alginate, and are the descriptive differences consistent across three trials?
+Scan C versus D is a separate tray-status sensitivity comparison.
+
+## Proposed objective and hypothesis
+
+**Objective:** Characterize and compare peri-implant CBCT gray-value distributions at standardized
+sampling locations around titanium implants in matched scan configurations acquired with and without
+alginate, and assess consistency across three trials and tray status.
+
+**Hypothesis:** The null is that matched alginate and no-alginate scans have the same gray-value
+distribution; the research hypothesis is that the distributions differ. Direction and magnitude
+will be estimated. Gray values are a surrogate imaging outcome and do not alone prove that metal
+artifact was reduced or worsened. Optical scanning, dimensional accuracy, and material shrinkage
+are outside the study.
+
+## Preliminary results
+
+- The spreadsheet contains 18 site rows and {{ measurement_count }} numeric values: 72 per site,
+  organized as 3 trials × 24 measurements. There are no blank or non-numeric measurement cells.
+- {{ zero_count }} values ({{ "%.1f"|format(zero_percent) }}%) are exactly zero. They were retained.
+  Their physical/data-processing meaning still needs confirmation.
+- Nine of ten manuscript scan means reproduce from trial 1 at two decimals. Scan F is 632.2047 in
+  the spreadsheet (632.20) versus 632.21 in the manuscripts.
+- All nine Scan A adjusted p-values reproduce as a ten-group Tukey HSD on trial 1, identifying the
+  prior calculation but not validating its independence assumption.
+- {{ positive_site_count }}/{{ matched_site_count }} anatomically matched site rows have a higher
+  overall mean in the alginate scan. Descriptive differences range from
+  {{ "%.1f"|format(matched_difference_min) }} to {{ "%.1f"|format(matched_difference_max) }} gray-value
+  units. These are exploratory summaries, not independent replicated effects.
+- The reported E–F, G–H, and I–J p-values are not reproduced by the same Tukey procedure; the
+  original method needs to be identified.
+
+## Main limitations
+
+1. The 24 within-trial columns lack radius/direction labels; the meaning of exact zero is unknown.
+2. Multiple points from one scan are repeated technical measurements. Treating them as independent
+   samples is likely pseudoreplication and can make confidence intervals and p-values too optimistic.
+3. Scan A has no implant, so comparisons with A combine implant presence with other conditions.
+4. Scan configurations vary by implant number and anatomy; alginate inference should emphasize
+   B–C, E–F, G–H, and I–J, with C–D reported separately.
+5. The workbook does not contain independent skull/acquisition identifiers, ROI coordinates,
+   qualitative reader scores, or extraction provenance.
+
+## Decisions needed at the meeting
+
+1. Confirm that the three 24-column groups are trials and provide the within-trial radius/direction
+   order.
+2. Define zero values: observed gray value, clipping/background, or encoded missingness.
+3. Confirm Scan D's exact condition after tray removal and the intended C–D interpretation.
+4. Identify the statistical procedure/software used for the second manuscript p-value table.
+5. Confirm the number of independent skulls and scan acquisitions. If there is one acquisition per
+   condition, present inference as exploratory and plan independent replication.
+6. Approve the revised objective/hypothesis and supply qualitative ratings if those conclusions will
+   remain in the manuscript.
+
+## Requested meeting outcome
+
+Approve the data dictionary, experimental unit, primary matched contrasts, role of all three trials,
+and whether the current work is a descriptive pilot or has enough independent replication for a
+confirmatory mixed/repeated-measures analysis.
+"""
+
+
 def write_reports(
     results: AuditResults, figures: dict[str, str], output_dir: str | Path
-) -> tuple[Path, Path]:
+) -> tuple[Path, Path, Path]:
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     context = _report_context(results, figures)
     environment = Environment(loader=BaseLoader(), autoescape=False, keep_trailing_newline=True)
     markdown = environment.from_string(MARKDOWN_TEMPLATE).render(**context)
     html = environment.from_string(HTML_TEMPLATE).render(**context)
+    meeting_summary = environment.from_string(MEETING_TEMPLATE).render(**context)
     markdown_path = output / "data_audit_report.md"
     html_path = output / "data_audit_report.html"
+    meeting_path = output / "meeting_summary.md"
     markdown_path.write_text(markdown, encoding="utf-8")
     html_path.write_text(html, encoding="utf-8")
-    return markdown_path, html_path
+    meeting_path.write_text(meeting_summary, encoding="utf-8")
+    return markdown_path, html_path, meeting_path

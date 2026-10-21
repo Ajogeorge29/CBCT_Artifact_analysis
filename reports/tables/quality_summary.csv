@@ -3,7 +3,7 @@ Worksheets,1,One worksheet expected
 Worksheet extent,32 × 74,Includes notes/blank padding
 Data rows / implant sites,18,Expected 18
 Scans,10,Expected A–J
-Numeric measurements,1296,18 sites × 72 cells
+Numeric measurements,1296,18 sites × 3 trials × 24 cells
 Missing/non-numeric values,0,Validated before analysis
 Zero values,358,27.6% of numeric cells
 Negative values,0,None expected in current workbook

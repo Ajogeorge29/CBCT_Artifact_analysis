@@ -8,27 +8,33 @@ The project answers three practical questions:
 
 1. Is the private master workbook structurally usable and internally consistent?
 2. Can the descriptive values and p-values printed in the manuscripts be reproduced?
-3. How sensitive are the conclusions to the workbook's three unlabelled measurement blocks?
+3. How sensitive are the conclusions to the workbook's three 24-measurement trial blocks?
 
 ## Current audit result
 
 The private workbook contains 18 implant-site rows, 10 scans (A–J), and 1,296 numeric
-measurements. Each site has 72 values arranged as three unlabelled 24-value blocks. The
+measurements. Each site has 72 values arranged as three 24-measurement trials. The within-trial
+radius/direction order still requires a signed-off data dictionary. The
 manuscripts describe 24 values per site—eight points at three radii—and 9 of 10 printed scan
-means match **block 1 only** at two decimals. Scan F is close but not exact: the workbook gives
+means match **trial 1 only** at two decimals. Scan F is close but not exact: the workbook gives
 632.2047 (632.20 at two decimals), while the manuscripts print 632.21.
 
-The Scan A comparison p-values also reproduce as a ten-group Tukey HSD on block 1. This
+The Scan A comparison p-values also reproduce as a ten-group Tukey HSD on trial 1. This
 identifies the prior calculation, but it raises two issues that must be resolved before
 submission:
 
-- blocks 2 and 3 account for two-thirds of the workbook's measurements and are not explained;
+- trials 2 and 3 account for two-thirds of the workbook's measurements but are absent from the
+  reported manuscript calculation;
 - point-level PIV measurements are nested within implant sites and scans, so treating them as
   independent replicates may produce pseudoreplication.
 
 The detailed findings, figures, reconciliation tables, limitations, and recommended fixes are in
 the [data audit report](reports/data_audit_report.md). The formatted browser version is
 `reports/data_audit_report.html`.
+
+The professor-requested deliverables are indexed in
+[PROFESSOR_CHECKLIST.md](docs/PROFESSOR_CHECKLIST.md), including three numbered tables, two numbered
+figures, revised manuscript copies, and a [one-page meeting summary](reports/meeting_summary.md).
 
 This is a data-quality and reproducibility audit, not a clinical claim. The data currently support
 descriptive exploration; confirmatory inference requires a defined experimental unit, documented
@@ -43,7 +49,11 @@ column schema, and adequate independent replication.
 │   └── private/                  # ignored; workbook lives here locally
 ├── docs/
 │   ├── source/                   # manuscript and abstract source documents
+│   ├── revised/                  # revised-framing manuscript copies
 │   ├── ANALYSIS_DECISIONS.md     # traceable assumptions and open decisions
+│   ├── PROFESSOR_CHECKLIST.md
+│   ├── REVISED_OBJECTIVE_AND_HYPOTHESIS.md
+│   ├── STATISTICAL_LIMITATIONS.md
 │   └── DATA_DICTIONARY_REQUIRED.md
 ├── reports/
 │   ├── data_audit_report.html    # generated visual report
@@ -102,21 +112,23 @@ site counts, measurement count, or numeric completeness changes.
 
 The pipeline generates these aggregate artifacts:
 
-- scan and block summary statistics;
-- exact reconciliation of manuscript means with workbook block 1;
+- scan and trial summary statistics;
+- Tables 1–3 requested by the professor and a scan/site/trial zero audit;
+- exact reconciliation of manuscript means with workbook trial 1;
 - reproduction of the Scan A Tukey HSD table;
-- a sensitivity analysis for B–C, E–F, G–H, I–J, and the C–D tray comparison across all blocks;
+- a sensitivity analysis for B–C, E–F, G–H, I–J, and the C–D tray comparison across all trials;
 - zero-value and structural quality checks;
-- five publication-oriented figures;
+- seven publication-oriented figures, including the two numbered professor figures;
 - Markdown and HTML audit reports;
+- a one-page meeting summary;
 - software-version run metadata.
 
 No cleaned row-level CSV is created by design.
 
 ## Known limitations
 
-- The 72 workbook columns have no names. Their mapping to radius, direction, repeat/slice, or
-  observer is unknown.
+- The three trial blocks are identifiable by position, but the 24 within-trial columns have no names.
+  Their mapping to radius, direction, repeat/slice, or observer is unknown.
 - Exact zeros are common and lack a documented meaning.
 - The workbook contains no qualitative Likert ratings, reader IDs, CBCT identifiers, ROI
   coordinates, or extraction-code provenance.

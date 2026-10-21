@@ -14,14 +14,21 @@ from cbct_artifact_analysis.study import (
     MANUSCRIPT_MATCHED_P,
     MANUSCRIPT_SCAN_MEANS,
     MATCHED_PAIRS,
+    MATCHED_SITE_PAIRS,
     SCAN_METADATA,
+    SITE_ANATOMY,
     TRAY_PAIR,
+    TRAY_SITE_PAIR,
 )
 
 
 @dataclass(frozen=True)
 class AuditResults:
     quality_summary: pd.DataFrame
+    experimental_design: pd.DataFrame
+    site_descriptive_statistics: pd.DataFrame
+    zero_by_scan_site_trial: pd.DataFrame
+    matched_comparisons: pd.DataFrame
     scan_block_summary: pd.DataFrame
     scan_overall_summary: pd.DataFrame
     manuscript_reproduction: pd.DataFrame
@@ -52,7 +59,7 @@ def _quality_summary(data: WorkbookData) -> pd.DataFrame:
         ),
         ("Data rows / implant sites", len(data.sites), "Expected 18"),
         ("Scans", data.long["scan_id"].nunique(), "Expected A–J"),
-        ("Numeric measurements", len(values), "18 sites × 72 cells"),
+        ("Numeric measurements", len(values), "18 sites × 3 trials × 24 cells"),
         ("Missing/non-numeric values", int(values.isna().sum()), "Validated before analysis"),
         ("Zero values", int(values.eq(0).sum()), f"{values.eq(0).mean():.1%} of numeric cells"),
         ("Negative values", int(values.lt(0).sum()), "None expected in current workbook"),
@@ -78,6 +85,119 @@ def _quality_summary(data: WorkbookData) -> pd.DataFrame:
         ),
     ]
     return pd.DataFrame(rows, columns=["check", "result", "interpretation"])
+
+
+def _experimental_design() -> pd.DataFrame:
+    rows = []
+    for scan_id, metadata in SCAN_METADATA.items():
+        rows.append(
+            {
+                "scan": scan_id,
+                "implant_number": metadata.implant_count,
+                "anatomical_site": metadata.anatomical_site,
+                "alginate": "Yes" if metadata.alginate else "No",
+                "tray_status": metadata.tray_status,
+                "design_note": metadata.description,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _site_descriptive_statistics(long: pd.DataFrame) -> pd.DataFrame:
+    grouped = long.groupby(["scan_id", "site_code"], sort=False)["value"]
+    summary = grouped.agg(
+        n="size",
+        mean="mean",
+        sd="std",
+        median="median",
+        q1=lambda values: values.quantile(0.25),
+        q3=lambda values: values.quantile(0.75),
+        minimum="min",
+        maximum="max",
+    ).reset_index()
+    summary["iqr"] = summary["q3"] - summary["q1"]
+    summary["zero_count"] = grouped.apply(
+        lambda values: int(values.eq(0).sum()), include_groups=False
+    ).to_numpy()
+    summary["zero_percent"] = 100 * summary["zero_count"] / summary["n"]
+    summary.insert(2, "anatomical_site", summary["site_code"].map(SITE_ANATOMY))
+    return summary[
+        [
+            "scan_id",
+            "site_code",
+            "anatomical_site",
+            "n",
+            "mean",
+            "sd",
+            "median",
+            "q1",
+            "q3",
+            "iqr",
+            "minimum",
+            "maximum",
+            "zero_count",
+            "zero_percent",
+        ]
+    ]
+
+
+def _zero_by_scan_site_trial(long: pd.DataFrame) -> pd.DataFrame:
+    grouped = long.groupby(["scan_id", "site_code", "block"], sort=False)["value"]
+    result = grouped.agg(
+        measurement_count="size",
+        zero_count=lambda values: int(values.eq(0).sum()),
+    ).reset_index()
+    result = result.rename(columns={"block": "trial"})
+    result["zero_percent"] = 100 * result["zero_count"] / result["measurement_count"]
+    result.insert(2, "anatomical_site", result["site_code"].map(SITE_ANATOMY))
+    return result
+
+
+def _matched_site_comparisons(long: pd.DataFrame) -> pd.DataFrame:
+    site_overall = long.groupby(["scan_id", "site_code"], sort=False)["value"].agg(
+        n="size", mean="mean", median="median"
+    )
+    site_trial = long.groupby(["scan_id", "site_code", "block"], sort=False)["value"].mean()
+    rows = []
+    pairs = [(*pair, "Alginate vs no alginate") for pair in MATCHED_SITE_PAIRS] + [
+        (*TRAY_SITE_PAIR, "Tray sensitivity; both scans labelled alginate")
+    ]
+    for comparison, first_site, second_site, anatomical_site, comparison_type in pairs:
+        first_scan, second_scan = comparison.split("-")
+        first = site_overall.loc[(first_scan, first_site)]
+        second = site_overall.loc[(second_scan, second_site)]
+        trial_differences = [
+            site_trial.loc[(second_scan, second_site, trial)]
+            - site_trial.loc[(first_scan, first_site, trial)]
+            for trial in (1, 2, 3)
+        ]
+        rows.append(
+            {
+                "comparison": comparison,
+                "comparison_type": comparison_type,
+                "anatomical_site": anatomical_site,
+                "first_scan": first_scan,
+                "first_condition": SCAN_METADATA[first_scan].condition,
+                "first_site_code": first_site,
+                "first_n": int(first["n"]),
+                "first_mean": float(first["mean"]),
+                "first_median": float(first["median"]),
+                "second_scan": second_scan,
+                "second_condition": SCAN_METADATA[second_scan].condition,
+                "second_site_code": second_site,
+                "second_n": int(second["n"]),
+                "second_mean": float(second["mean"]),
+                "second_median": float(second["median"]),
+                "difference_second_minus_first": float(second["mean"] - first["mean"]),
+                "trial_difference_min": float(min(trial_differences)),
+                "trial_difference_max": float(max(trial_differences)),
+                "same_direction_all_trials": (
+                    all(value > 0 for value in trial_differences)
+                    or all(value < 0 for value in trial_differences)
+                ),
+            }
+        )
+    return pd.DataFrame(rows)
 
 
 def _summaries(long: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -194,6 +314,10 @@ def run_audit(data: WorkbookData) -> AuditResults:
     control_tukey, full_tukey = _control_tukey_reproduction(data.long)
     return AuditResults(
         quality_summary=_quality_summary(data),
+        experimental_design=_experimental_design(),
+        site_descriptive_statistics=_site_descriptive_statistics(data.long),
+        zero_by_scan_site_trial=_zero_by_scan_site_trial(data.long),
+        matched_comparisons=_matched_site_comparisons(data.long),
         scan_block_summary=scan_block,
         scan_overall_summary=overall,
         manuscript_reproduction=_manuscript_reproduction(scan_block),

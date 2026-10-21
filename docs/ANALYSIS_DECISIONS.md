@@ -9,7 +9,7 @@ reproducibility pipeline. Update it whenever a study owner resolves an open ques
 - Rows 1–18 contain implant-site data; later non-empty rows are analysis notes.
 - Column A identifies scans, and merged cells span scans with multiple implant sites.
 - Column B contains 18 unique site codes.
-- Columns C–BV contain 72 numeric values per site.
+- Columns C–BV contain 72 numeric values per site, organized as three 24-measurement trial blocks.
 - The manuscript states that eight points were sampled at each of three radii (0.5, 1, and 2 mm),
   implying 24 PIV observations per implant site.
 - Scan A is a no-implant control. Scans B/E/G/I are described as no alginate. Scans C/D/F/H/J are
@@ -22,8 +22,8 @@ reproducibility pipeline. Update it whenever a study owner resolves an open ques
 
 ## Explicit pipeline conventions
 
-- Columns C–Z are called `block 1`, AA–AX `block 2`, and AY–BV `block 3`.
-- Within each block, columns are numbered `measurement 1` through `measurement 24`.
+- Columns C–Z are `trial 1`, AA–AX `trial 2`, and AY–BV `trial 3`.
+- Within each trial, columns are numbered `measurement 1` through `measurement 24`.
 - The pipeline does **not** assign radius, direction, slice, repeat, or observer labels because the
   source file does not justify them.
 - Merged scan labels are carried forward only across rows whose column-B value matches a site code.
@@ -35,9 +35,9 @@ reproducibility pipeline. Update it whenever a study owner resolves an open ques
 
 ## Open decisions blocking a final analysis
 
-1. What do blocks 1, 2, and 3 represent?
-2. What is the exact order of radius and spatial direction inside each 24-value block?
-3. Why did the manuscripts use block 1 and omit blocks 2–3?
+1. What acquisition, slice, or extraction procedure operationally defines a trial?
+2. What is the exact order of radius and spatial direction inside each 24-value trial?
+3. Why did the manuscripts use trial 1 and omit trials 2–3?
 4. What does an exact zero mean in the source extraction?
 5. How many independent skulls, scan acquisitions, implant placements, and repeat extractions were
    performed? Which workbook fields identify them?

@@ -1,0 +1,10 @@
+comparison,comparison_type,anatomical_site,first_scan,first_condition,first_site_code,first_n,first_mean,first_median,second_scan,second_condition,second_site_code,second_n,second_mean,second_median,difference_second_minus_first,trial_difference_min,trial_difference_max,same_direction_all_trials
+B-C,Alginate vs no alginate,Posterior mandible; 1 implant,B,No alginate,S2LB,72,400.692,215.4377,C,Alginate,S3LB,72,547.9775,449.4687,147.2854,58.4825,244.8534,True
+E-F,Alginate vs no alginate,Mandibular posterior; 2 implants/opposing arches,E,No alginate,S5LB,72,351.2101,95.1563,F,Alginate,S10LB,72,563.2133,674.6428,212.0033,190.8864,236.5314,True
+E-F,Alginate vs no alginate,Maxillary posterior; 2 implants/opposing arches,E,No alginate,S5UB,72,192.9107,38.399,F,Alginate,S10UB,72,722.6008,683.1755,529.6901,520.5697,534.8662,True
+G-H,Alginate vs no alginate,Mandibular posterior; 2 implants/same jaw,G,No alginate,S6LB,72,449.6079,251.6397,H,Alginate,S7B,72,541.1817,587.4907,91.5737,25.8702,158.6961,True
+G-H,Alginate vs no alginate,Mandibular anterior; 2 implants/same jaw,G,No alginate,S6LF,72,497.3504,313.8023,H,Alginate,S7F,72,673.4768,439.8125,176.1264,136.059,215.8,True
+I-J,Alginate vs no alginate,Mandibular posterior; 3 implants,I,No alginate,S8LB,72,391.5106,217.1341,J,Alginate,S9LB,72,551.1149,562.0,159.6044,146.3847,173.7491,True
+I-J,Alginate vs no alginate,Mandibular anterior; 3 implants,I,No alginate,S8LF,72,480.3699,268.9365,J,Alginate,S9LF,72,816.9637,784.1969,336.5938,304.9441,369.0421,True
+I-J,Alginate vs no alginate,Maxillary posterior; 3 implants,I,No alginate,S8UB,72,272.4643,103.125,J,Alginate,S9UB,72,566.1455,516.741,293.6812,241.55,335.4873,True
+C-D,Tray sensitivity; both scans labelled alginate,Posterior mandible; tray present vs removed,C,Alginate,S3LB,72,547.9775,449.4687,D,Alginate; tray removed,S4LB,72,593.0145,607.0,45.0371,14.0216,66.2745,True
